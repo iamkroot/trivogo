@@ -15,6 +15,6 @@ This portal will enable the users to compare the prices of available rooms in ho
 # Contributors
 
 + [Krut Patel](@mach64)
-+ [Neal Menon]()
++ [Neal Menon](@NealMenon)
 + [Niral Khambhati](@niralk)
-+ [Rynaa Grover]()
++ [Rynaa Grover](@RynaaGrover)
