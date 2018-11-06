@@ -4,7 +4,7 @@
 
 # Java source files
 *.class
-
+out/**
 
 # OS Specific files
 **/*.DS_Store
