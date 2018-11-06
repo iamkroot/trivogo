@@ -1,11 +1,9 @@
 package com.trivogo.models;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.text.*;
-import java.util.Base64;
+import com.trivogo.utils.Hasher;
 
-public class UserModel {
+public class User {
     private String fullName,
             address,
             username,
@@ -13,7 +11,7 @@ public class UserModel {
             email;
     private java.util.Date dob;
 
-    public UserModel (String fullName, String address, String username, String password, String email, String Dob) {
+    public User(String fullName, String address, String username, String password, String email, String Dob) {
         setFullName(fullName);
         setAddress(address);
         setUsername(username);
@@ -21,7 +19,14 @@ public class UserModel {
         setEmail(email);
         setDob(Dob);
     }
-
+    public User(String fullName, String address, String username, String password, String email, java.util.Date Dob) {
+        setFullName(fullName);
+        setAddress(address);
+        setUsername(username);
+        setPassword(password);
+        setEmail(email);
+        this.dob = Dob;
+    }
     private void setFullName(String fullName) {
         this.fullName = fullName;
     }
@@ -35,14 +40,7 @@ public class UserModel {
     }
 
     private void setPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            this.password = Base64.getEncoder().encodeToString(hash);
-        } catch (java.security.NoSuchAlgorithmException nsae) {
-            System.err.println("NoSuchAlgorithmException error while hashing pwd.");
-            System.exit(2);
-        }
+        this.password = Hasher.hash(password);
     }
 
     private void setEmail(String email) {
