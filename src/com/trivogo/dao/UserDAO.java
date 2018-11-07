@@ -7,10 +7,17 @@ import java.text.SimpleDateFormat;
 import com.trivogo.models.User;
 
 public class UserDAO {
-    public static void addUser (User user) {
+    public static int addUser(User user) {
         Connection conn = DBConn.getConn();
         try {
-            String stmt = "INSERT INTO users (username, FullName, Email, Address, DOB, Password) VALUES (?, ?, ?, ?, ?, ?)";
+            String queryCheck = "SELECT count(*) from users WHERE username = ?";
+            PreparedStatement ps1 = conn.prepareStatement(queryCheck);
+            ps1.setString(1, user.getUsername());
+            ResultSet rs = ps1.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return -1;  // user already exists
+            }
+            String stmt = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getFullName());
@@ -20,11 +27,11 @@ public class UserDAO {
             ps.setString(6, user.getPassword());
             ps.executeUpdate();
             ps.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            System.exit(2);
+            return -2;  // random SQL Error
         }
+        return 1;
     }
     public static User getUser (String username) {
         Connection conn = DBConn.getConn();
@@ -41,13 +48,13 @@ public class UserDAO {
                     dob = (new SimpleDateFormat("yyyy-mm-dd")).parse(strDate);
                 } catch (ParseException e) {
                     System.err.println("Error while reading dob from database.");
-                    System.exit(2);
+                    return null;
                 }
                 user = new User(rs.getString("FullName"), rs.getString("Address"), rs.getString("username"), rs.getString("Password"), rs.getString("Email"), dob);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.exit(2);
+            return null;
         }
         return user;
     }
