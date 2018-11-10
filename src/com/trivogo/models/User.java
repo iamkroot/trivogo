@@ -1,7 +1,6 @@
 package com.trivogo.models;
 
 import java.text.*;
-import com.trivogo.utils.Hasher;
 
 public class User {
     private String fullName,
@@ -27,27 +26,27 @@ public class User {
         setEmail(email);
         this.dob = Dob;
     }
-    private void setFullName(String fullName) {
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    private void setAddress(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    private void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    private void setPassword(String password) {
-        this.password = Hasher.hash(password);
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    private void setDob(String Dob) {
+    public void setDob(String Dob) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         try {
             dob = sdf.parse(Dob);
