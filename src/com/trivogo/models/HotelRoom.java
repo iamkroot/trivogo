@@ -1,17 +1,13 @@
-
 package com.trivogo.models;
 
 abstract class HotelRoom {
     private String amenities;
     private int rate;
-    private boolean isOccupied;
 
     public HotelRoom(String amenities, int rate) {
         setAmenities(amenities);
         setRate(rate);
-        setUnoccupied();
     }
-
 
     private void setAmenities(String amenities) {
         this.amenities = amenities;
@@ -19,18 +15,6 @@ abstract class HotelRoom {
 
     private void setRate(int rate) {
         this.rate = rate;
-    }
-
-    public void setOccupied() {
-        this.isOccupied = true;
-    }
-
-    public void setUnoccupied() {
-        this.isOccupied = false;
-    }
-
-    public boolean isOccupied() {
-        return this.isOccupied;
     }
 
     abstract public String getRoomType();
@@ -43,5 +27,24 @@ abstract class HotelRoom {
         return this.rate;
     }
 
-} 
+}
 
+class StandardRoom extends HotelRoom {
+    StandardRoom(String amenities, int rate) {
+        super(amenities, rate);
+    }
+
+    public String getRoomType() {
+        return "Standard";
+    }
+}
+
+class DeluxeRoom extends HotelRoom {
+    DeluxeRoom(String amenities, int rate) {
+        super(amenities, rate);
+    }
+
+    public String getRoomType() {
+        return "Deluxe";
+    }
+}
