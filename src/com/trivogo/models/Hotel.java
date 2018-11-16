@@ -1,26 +1,26 @@
 
 package com.trivogo.models;
 
+import java.util.*;
+
 class Hotel {
     private String name, location;
-    private int numOfDeluxeRooms, numOfStandardRooms;
-    private DeluxeRoom[] DexRooms;
-    private StandardRoom[] StdRooms;
+    private HashMap<HotelRoom, Integer> totalRooms = new HashMap<>();
+    private DeluxeRoom dexRoom;
+    private StandardRoom stdRoom;
 
     public Hotel(String name, String location, int numDexRooms, int numStdRooms,
-                 String DexRoomAmenities, int DexRoomRate,
-                 String StdRoomAmenities, int StdRoomRate) {
+                 String dexRoomAmenities, int dexRoomRate,
+                 String stdRoomAmenities, int stdRoomRate) {
         this.name = name;
         this.location = location;
-
-        DexRooms = new DeluxeRoom[numDexRooms];
-        for (int i = 0; i < numDexRooms; i++) {
-            DexRooms[i] = new DeluxeRoom(DexRoomAmenities, DexRoomRate);
+        if (numStdRooms > 0) {
+            stdRoom = new StandardRoom(stdRoomAmenities, stdRoomRate);
+            totalRooms.put(stdRoom, numStdRooms);
         }
-
-        StdRooms = new StandardRoom[numStdRooms];
-        for (int i = 0; i < numStdRooms; i++) {
-            StdRooms[i] = new StandardRoom(StdRoomAmenities, StdRoomRate);
+        if (numDexRooms > 0) {
+            dexRoom = new DeluxeRoom(dexRoomAmenities, dexRoomRate);
+            totalRooms.put(dexRoom, numDexRooms);
         }
     }
 
@@ -30,5 +30,21 @@ class Hotel {
 
     public String getLocation() {
         return this.location;
+    }
+
+    public int getTotalStandardRooms() {
+        return totalRooms.getOrDefault(stdRoom, 0);
+    }
+
+    public int getTotalDeluxeRooms() {
+        return totalRooms.getOrDefault(dexRoom, 0);
+    }
+
+    public StandardRoom getStdRoom() {
+        return stdRoom;
+    }
+
+    public DeluxeRoom getDexRoom() {
+        return dexRoom;
     }
 }
