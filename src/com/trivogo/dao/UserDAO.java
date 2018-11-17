@@ -10,13 +10,6 @@ public class UserDAO {
     public static int addUser(User user) {
         Connection conn = DBConn.getConn();
         try {
-            String queryCheck = "SELECT count(*) from users WHERE username = ?";
-            PreparedStatement ps1 = conn.prepareStatement(queryCheck);
-            ps1.setString(1, user.getUsername());
-            ResultSet rs = ps1.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return -1;  // user already exists
-            }
             String stmt = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, user.getUsername());
@@ -33,7 +26,25 @@ public class UserDAO {
         }
         return 1;
     }
-    public static User getUser (String username) {
+
+    public static boolean checkUserExists(String username) {
+        Connection conn = DBConn.getConn();
+        String queryCheck = "SELECT count(*) from users WHERE username = ?";
+        try {
+            PreparedStatement ps1 = conn.prepareStatement(queryCheck);
+            ps1.setString(1, username);
+            ResultSet rs = ps1.executeQuery();
+            ps1.close();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true;  // user already exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static User getUser(String username) {
         Connection conn = DBConn.getConn();
         User user = null;
         try {
