@@ -5,6 +5,7 @@ import com.trivogo.models.User;
 import com.trivogo.utils.Hasher;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class LoginDialog extends JDialog {

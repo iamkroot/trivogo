@@ -1,11 +1,15 @@
 package com.trivogo.gui;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.dao.UserDAO;
 import com.trivogo.models.User;
 import com.trivogo.utils.Hasher;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
 
 import static com.trivogo.utils.Regex.validate_date;
 import static com.trivogo.utils.Regex.validate_email;
@@ -21,7 +25,6 @@ public class SignUpDialog extends JDialog {
     private JLabel fullNameLabel;
     private JTextField emailField;
     private JLabel emailLabel;
-    private JTextField dobField;
     private JLabel addressLabel;
     private JLabel dateOfBirthLabel;
     private JTextArea addressField;
@@ -30,8 +33,10 @@ public class SignUpDialog extends JDialog {
     private JPanel Form;
     private JPanel Buttons;
     private JLabel logo;
+    private DatePicker dobPicker;
 
     public SignUpDialog() {
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -69,7 +74,7 @@ public class SignUpDialog extends JDialog {
         String address = addressField.getText();
         String email = emailField.getText();
         String username = usernameField.getText();
-        String date = dobField.getText();
+        String date = dobPicker.getDateStringOrEmptyString();
         char[] password = passwordField1.getPassword();
         {
             if (name.length() == 0) {
@@ -130,4 +135,18 @@ public class SignUpDialog extends JDialog {
         // add your code here if necessary
         dispose();
     }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        final LocalDate today = LocalDate.now();
+        DatePickerSettings dobSettings = new DatePickerSettings();
+        dobPicker = new DatePicker(dobSettings);
+        dobPicker.setDate(today.minusYears(18));
+        dobSettings.setAllowEmptyDates(false);
+        dobSettings.setDateRangeLimits(null, today.minusYears(18));
+        dobSettings.setFormatForDatesCommonEra("dd/MM/yyyy");
+
+
+    }
+
 }
