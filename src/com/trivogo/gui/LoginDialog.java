@@ -73,7 +73,7 @@ public class LoginDialog extends JDialog {
                         "Password Incorrect",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                //Go to "Find Hotels" page
+                HomePageGUI.main(null);
                 dispose();
             }
         } else {
