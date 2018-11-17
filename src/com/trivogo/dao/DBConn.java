@@ -67,23 +67,25 @@ class DBConn {
 
     private static void populateHotels() {
         Object hotelData[][] = {
-                {"Paris Hilton", "Hyderabad", 200, 300, "Wifi, Breakfast, Club House", "Wifi", 4.5f},
-                {"Mercure Grand", "New Delhi", 100, 100, "Wifi, Breakfast, Gym", "Breakfast", 3.7f},
-                {"Taj", "Mumbai", 630, 190, "Wifi, Breakfast, Club, Gym, Taxi Service", "Wifi, Breakfast", 4.8f}
+                {"Paris Hilton", "Hyderabad", 200, 300, 2300f, 1500f, "Wifi, Breakfast, Club House", "Wifi"},
+                {"Mercure Grand", "New Delhi", 100, 100, 5000f, 3100f, "Wifi, Breakfast, Gym", "Breakfast"},
+                {"Taj", "Mumbai", 630, 190, 10000f, 2200f, "Wifi, Breakfast, Club, Gym, Taxi Service", "Wifi, Breakfast"},
+                {"Lotus Grand", "Hyderabad", 50, 210, 750f, 400f, "Breakfast", ""}
         };
         try {
             PreparedStatement clearTable = conn.prepareStatement("DELETE FROM hotels");
             clearTable.executeUpdate();
             clearTable.close();
-            PreparedStatement ps = conn.prepareStatement("insert into hotels (name, location, numDexRooms, numStdRooms, dexRoomAmenities, stdRoomAmenities, overallRating) values (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = conn.prepareStatement("insert into hotels (name, location, numDexRooms, numStdRooms, dexRoomRate, stdRoomRate, dexRoomAmenities, stdRoomAmenities) values (?, ?, ?, ?, ?, ?, ?, ?)");
             for (Object[] hotel : hotelData) {
                 ps.setString(1, (String) hotel[0]);
                 ps.setString(2, (String) hotel[1]);
                 ps.setInt(3, (Integer) hotel[2]);
                 ps.setInt(4, (Integer) hotel[3]);
-                ps.setString(5, (String) hotel[4]);
-                ps.setString(6, (String) hotel[5]);
-                ps.setFloat(7, (Float) hotel[6]);
+                ps.setFloat(5, (Float) hotel[4]);
+                ps.setFloat(6, (Float) hotel[5]);
+                ps.setString(7, (String) hotel[6]);
+                ps.setString(8, (String) hotel[7]);
                 ps.addBatch();
             }
             ps.executeBatch();
