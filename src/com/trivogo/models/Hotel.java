@@ -3,7 +3,7 @@ package com.trivogo.models;
 
 import java.util.*;
 
-class Hotel {
+public class Hotel {
     private String name, location;
     private HashMap<HotelRoom, Integer> totalRooms = new HashMap<>();
     private DeluxeRoom dexRoom;
