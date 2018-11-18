@@ -14,7 +14,7 @@ public class Booking {
     public Booking(Hotel hotel, User user, HotelRoom room, int numRooms, java.util.Date inDate, java.util.Date outDate, String stat, int bID) {
         setHotel(hotel);
         setUser(user);
-        setRoomType(room);
+        setRoom(room);
         setNumOfRooms(numRooms);
         setCheckInDate(inDate);
         setCheckOutDate(outDate);
@@ -28,7 +28,7 @@ public class Booking {
     public void setUser(User user){
         this.user = user;
     }
-    public void setRoomType(HotelRoom room){
+    public void setRoom(HotelRoom room){
         this.room = room;
     }
     public void setNumOfRooms(int nr){
@@ -57,7 +57,7 @@ public class Booking {
     }
     
     
-    public HotelRoom getRoomType() {
+    public HotelRoom getRoom() {
         return this.room;
     }
     
