@@ -19,7 +19,7 @@ public class Booking {
     }
     
     public void setHotel(Hotel hotel){
-        this.hotel = h;
+        this.hotel = hotel;
     }
     public void setUser(User user){
         this.user = user;

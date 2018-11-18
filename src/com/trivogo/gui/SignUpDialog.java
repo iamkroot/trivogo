@@ -74,7 +74,7 @@ public class SignUpDialog extends JDialog {
         String address = addressField.getText();
         String email = emailField.getText();
         String username = usernameField.getText();
-        String date = dobPicker.getDateStringOrEmptyString();
+        String date = dobPicker.getDateStringOrEmptyString(); // date is in yyyy-MM-dd format
         char[] password = passwordField1.getPassword();
         {
             if (name.length() == 0) {
@@ -144,7 +144,7 @@ public class SignUpDialog extends JDialog {
         dobPicker.setDate(today.minusYears(18));
         dobSettings.setAllowEmptyDates(false);
         dobSettings.setDateRangeLimits(null, today.minusYears(18));
-        dobSettings.setFormatForDatesCommonEra("dd/MM/yyyy");
+        dobSettings.setFormatForDatesCommonEra("dd/MM/YYYY");
 
 
     }
