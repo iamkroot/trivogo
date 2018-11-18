@@ -61,7 +61,7 @@ public class UserDAO {
                     System.err.println("Error while reading dob from database.");
                     return null;
                 }
-                user = new User(rs.getString("fullName"), rs.getString("address"), rs.getString("username"), rs.getString("passwordHash"), rs.getString("email"), dob);
+                user = new User(rs.getString("username"), rs.getString("fullName"), rs.getString("email"), rs.getString("address"), dob, rs.getString("passwordHash"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

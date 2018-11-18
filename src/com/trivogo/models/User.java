@@ -10,7 +10,7 @@ public class User {
             email;
     private java.util.Date dob;
 
-    public User(String fullName, String address, String username, String password, String email, String Dob) {
+    public User(String username, String fullName, String email, String address, String Dob, String password) {
         setFullName(fullName);
         setAddress(address);
         setUsername(username);
@@ -18,7 +18,7 @@ public class User {
         setEmail(email);
         setDob(Dob);
     }
-    public User(String fullName, String address, String username, String password, String email, java.util.Date Dob) {
+    public User(String username, String fullName, String email, String address, java.util.Date Dob, String password) {
         setFullName(fullName);
         setAddress(address);
         setUsername(username);

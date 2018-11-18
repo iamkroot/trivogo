@@ -115,13 +115,13 @@ public class SignUpDialog extends JDialog {
                 return;
             }
         }
-        if (UserDAO.getUser(username) != null) {
+        if (UserDAO.checkUserExists(username)) {
             JOptionPane.showMessageDialog(null,
                     "The Username is taken. Please try using another Username.",
                     "Username Exists",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            User new_user = new User(name, address, username, Hasher.hash(String.valueOf(password)), email, date);
+            User new_user = new User(username, name, email, address, date, Hasher.hash(String.valueOf(password)));
             UserDAO.addUser(new_user);
             JOptionPane.showMessageDialog(null,
                     "Your Account with the given information has been created.",
