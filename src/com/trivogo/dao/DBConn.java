@@ -1,5 +1,8 @@
 package com.trivogo.dao;
 
+import com.trivogo.models.User;
+import com.trivogo.utils.Hasher;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,11 +36,11 @@ class DBConn {
     public static void populateDB() {
         conn = getConn();
         populateHotels();
+        populateUsers();
     }
 
     private static void createTables() {
-        String createUserTable = "DROP TABLE IF EXISTS users;" +
-                "CREATE TABLE users (" +
+        String createUserTable = "CREATE TABLE users (" +
                 "username TEXT PRIMARY KEY," +
                 "fullName TEXT," +
                 "email TEXT," +
@@ -45,8 +48,7 @@ class DBConn {
                 "dob TEXT," +
                 "passwordHash TEXT" +
                 ");";
-        String createHotelTable = "DROP TABLE IF EXISTS hotels;" +
-                "CREATE TABLE hotels (" +
+        String createHotelTable = "CREATE TABLE hotels (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT," +
                 "location TEXT," +
@@ -65,6 +67,17 @@ class DBConn {
         }
     }
 
+    private static void populateUsers() {
+        User[] dummyUsers = {
+                new User("vg", "Van Gogh", "omni@example.com", "There", "01/04/1725", Hasher.hash("rich")),
+                new User("pp", "Pablo Picasso", "pavlo@example.com", "Yo Mama", "28/11/1825", Hasher.hash("rich")),
+                new User("dv", "Da Vinci", "leo@example.com", "Moan a Lisa", "15/09/1546", Hasher.hash("rich"))
+        };
+        for (User user : dummyUsers) {
+            UserDAO.addUser(user);
+        }
+    }
+
     private static void populateHotels() {
         Object hotelData[][] = {
                 {"Paris Hilton", "Hyderabad", 200, 300, 2300f, 1500f, "Wifi, Breakfast, Club House", "Wifi"},
@@ -73,9 +86,6 @@ class DBConn {
                 {"Lotus Grand", "Hyderabad", 50, 210, 750f, 400f, "Breakfast", ""}
         };
         try {
-            PreparedStatement clearTable = conn.prepareStatement("DELETE FROM hotels");
-            clearTable.executeUpdate();
-            clearTable.close();
             PreparedStatement ps = conn.prepareStatement("insert into hotels (name, location, numDexRooms, numStdRooms, dexRoomRate, stdRoomRate, dexRoomAmenities, stdRoomAmenities) values (?, ?, ?, ?, ?, ?, ?, ?)");
             for (Object[] hotel : hotelData) {
                 ps.setString(1, (String) hotel[0]);
@@ -95,6 +105,11 @@ class DBConn {
         }
     }
 
+    private static void populateBookings() {
+        Object[][] bookingData = {
+
+        };
+    }
     static void closeConn() {
         try {
             if (conn != null && !conn.isClosed())
