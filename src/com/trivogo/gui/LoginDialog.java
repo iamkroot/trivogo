@@ -94,7 +94,6 @@ public class LoginDialog extends JDialog {
         dialog.setTitle("Login");
         dialog.pack();
         dialog.setVisible(true);
-        System.exit(0);
     }
 
     private void createUIComponents() {

@@ -55,13 +55,13 @@ public class UserDAO {
             while (rs.next()) {
                 java.util.Date dob = null;
                 try {
-                    String strDate = rs.getString("DOB");
+                    String strDate = rs.getString("dob");
                     dob = (new SimpleDateFormat("yyyy-mm-dd")).parse(strDate);
                 } catch (ParseException e) {
                     System.err.println("Error while reading dob from database.");
                     return null;
                 }
-                user = new User(rs.getString("FullName"), rs.getString("Address"), rs.getString("username"), rs.getString("Password"), rs.getString("Email"), dob);
+                user = new User(rs.getString("fullName"), rs.getString("address"), rs.getString("username"), rs.getString("passwordHash"), rs.getString("email"), dob);
             }
         } catch (SQLException e) {
             e.printStackTrace();
