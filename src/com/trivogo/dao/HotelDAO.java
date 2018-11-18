@@ -31,7 +31,7 @@ public class HotelDAO {
             ps.setString(1, location);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Hotel hotel = new Hotel(rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"));
+                Hotel hotel = new Hotel(rs.getInt("id"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"));
                 hotels.add(hotel);
             }
             ps.close();
