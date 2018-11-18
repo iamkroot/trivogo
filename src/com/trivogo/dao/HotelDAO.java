@@ -7,6 +7,25 @@ import java.util.List;
 import com.trivogo.models.Hotel;
 
 public class HotelDAO {
+    public static Hotel getHotelByID(int id) {
+        Connection conn = DBConn.getConn();
+        Hotel hotel = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                hotel = new Hotel(id, rs.getString("name"), rs.getString("location"),
+                        rs.getInt("numDexRooms"), rs.getInt("numStdRooms"),
+                        rs.getString("dexRoomAmenities"), rs.getFloat("dexRoomRate"),
+                        rs.getString("stdRoomAmenities"), rs.getFloat("stdRoomRate"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hotel;
+    }
+
     public static List<String> getAllLocations() {
         Connection conn = DBConn.getConn();
         List<String> locations = new ArrayList<>();

@@ -10,17 +10,17 @@ public class Hotel {
     private HotelRoom stdRoom, dexRoom;
 
     public Hotel(int id, String name, String location, int numDexRooms, int numStdRooms,
-                 String dexRoomAmenities, int dexRoomRate,
-                 String stdRoomAmenities, int stdRoomRate) {
+                 String dexRoomAmenities, float dexRoomRate,
+                 String stdRoomAmenities, float stdRoomRate) {
         this.id = id;
         this.name = name;
         this.location = location;
         if (numStdRooms > 0) {
-            stdRoom = new HotelRoom("standard", stdRoomAmenities, stdRoomRate);
+            stdRoom = new HotelRoom("standard", stdRoomAmenities, (int) stdRoomRate);
             totalRooms.put(stdRoom, numStdRooms);
         }
         if (numDexRooms > 0) {
-            dexRoom = new HotelRoom("deluxe", dexRoomAmenities, dexRoomRate);
+            dexRoom = new HotelRoom("deluxe", dexRoomAmenities, (int) dexRoomRate);
             totalRooms.put(dexRoom, numDexRooms);
         }
     }
