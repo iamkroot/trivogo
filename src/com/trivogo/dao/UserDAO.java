@@ -3,8 +3,10 @@ package com.trivogo.dao;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.trivogo.models.User;
+import com.trivogo.utils.DateUtil;
 
 public class UserDAO {
     public static int addUser(User user) {
@@ -53,14 +55,7 @@ public class UserDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                java.util.Date dob = null;
-                try {
-                    String strDate = rs.getString("dob");
-                    dob = (new SimpleDateFormat("yyyy-mm-dd")).parse(strDate);
-                } catch (ParseException e) {
-                    System.err.println("Error while reading dob from database.");
-                    return null;
-                }
+                Date dob = DateUtil.readFromDB(rs.getString("dob"));
                 user = new User(rs.getString("username"), rs.getString("fullName"), rs.getString("email"), rs.getString("address"), dob, rs.getString("passwordHash"));
             }
         } catch (SQLException e) {
