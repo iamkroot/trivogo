@@ -8,14 +8,18 @@ public class Booking {
     private java.util.Date checkInDate; 
     private java.util.Date checkOutDate;
     private int numOfRooms;
+    private int bookingID;
+    private String status;
     
-    public Booking(Hotel hotel, User user, HotelRoom room, int numRooms, java.util.Date inDate, java.util.Date outDate) {
+    public Booking(Hotel hotel, User user, HotelRoom room, int numRooms, java.util.Date inDate, java.util.Date outDate, String stat, int bID) {
         setHotel(hotel);
         setUser(user);
         setRoomType(room);
         setNumOfRooms(numRooms);
         setCheckInDate(inDate);
         setCheckOutDate(outDate);
+        setStatus(stat);
+        setBookingID(bID);
     }
     
     public void setHotel(Hotel hotel){
@@ -36,7 +40,12 @@ public class Booking {
     public void setCheckOutDate(java.util.Date outDate){
         this.checkOutDate = outDate;
     }
-   
+    public void setStatus(String s) {
+        this.status = s;
+    }
+    public void setBookingID(int bID) {
+        this.bookingID = bID;
+    }
     
     public Hotel getHotel() {
         return this.hotel;
@@ -65,5 +74,14 @@ public class Booking {
     public java.util.Date getCheckOutDate() {
         return this.checkOutDate;
     }
+    
+    public String getStatus() {
+        return this.status;
+    }
+    
+    public int getBookingID() {
+        return this.bookingID;
+    }
+    
     
 }
