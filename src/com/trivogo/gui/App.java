@@ -8,4 +8,7 @@ public class App {
     private JPanel cardsPanel;
     private HomePageCard homePageCard1;
     private SearchCard searchCard1;
+    private JLabel logoLabel;
+    private JButton backButton;
+    private JButton homeButton;
 }

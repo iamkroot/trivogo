@@ -16,7 +16,38 @@
         </constraints>
         <properties/>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="a162" class="javax.swing.JButton" binding="backButton">
+            <constraints/>
+            <properties>
+              <label value="Back"/>
+              <text value="Back"/>
+            </properties>
+          </component>
+          <hspacer id="4533a">
+            <constraints/>
+          </hspacer>
+          <component id="350c5" class="javax.swing.JLabel" binding="logoLabel">
+            <constraints/>
+            <properties>
+              <icon value="com/trivogo/resources/logoSmall.png"/>
+              <maximumSize width="193" height="61"/>
+              <minimumSize width="193" height="61"/>
+              <preferredSize width="143" height="61"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <hspacer id="7571">
+            <constraints/>
+          </hspacer>
+          <component id="7cbe3" class="javax.swing.JButton" binding="homeButton">
+            <constraints/>
+            <properties>
+              <label value="Home"/>
+              <text value="Home"/>
+            </properties>
+          </component>
+        </children>
       </toolbar>
       <grid id="56524" binding="cardsPanel" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints>
