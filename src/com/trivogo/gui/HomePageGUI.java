@@ -5,6 +5,7 @@ import com.trivogo.models.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 public class HomePageGUI {
     private User user;
@@ -75,6 +76,17 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        Vector <String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
+        locationBox = new JComboBox(allLocation);
+    }
 }
