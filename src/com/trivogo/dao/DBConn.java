@@ -80,19 +80,19 @@ class DBConn {
 
     private static void populateHotels() {
         Object hotelData[][] = {
-                1{"Hilton", "Hyderabad", 200, 300, 2300f, 1500f, "Wifi, Breakfast, Club House", "Wifi"},
-                2{"Mercure Grand", "New Delhi", 100, 100, 5000f, 3100f, "Wifi, Breakfast, Gym", "Breakfast"},
-                3{"Taj", "Mumbai", 630, 190, 10000f, 2200f, "Wifi, Breakfast, Club, Gym, Taxi Service", "Wifi, Breakfast"},
-                4{"Leela Palace", "Cochin", 50, 210, 7500f, 4000f, "Breakfast, In room Pool, Spa, Taxi Service, Wifi, Club, Gym", "Breakfast, Pool, Spa, Wifi"},
-                5{"Novotel", "Hyderabad", 50, 210, 750f, 400f, "Breakfast, Taxi Service", "Breakfast"},
-                6{"Grand Lotus", "Hyderabad", 50, 200, 12000f, 8000f, "Breakfast Pool", "Pool"},
-                7{"Fort House Inn", "New Delhi", 5, 10, 3400f, 1200f, "Spa, Pool", "Spa"},
-                8{"MGM Grande", "Mumbai", 500, 750, 10000f, 75000f, "Poker Table, Conference Room, Gym", "Conference Room, Gym"},
-                9{"Grand Hilton", "New Delhi", 200, 400, 8000f, 4300f, "Premium View, Pool, Spa, Guided Tour", "Guided Tour, Pool, Spa"},
-                0{"Ramada", "Cochin", 12, 50, 12000f, 5700f, "Indoor pool, Spa, Massage Center, Breakfast", "Spa, Pool, Breakfast"},
-                11{"Vivanta", "Cochin", 80, 120, 18000f, 12000f, "Breakfast, Pool, Gym, Boat Ride, Spa", "Breakfast, Pool, Gym"},
-                12{"Ritz Carlton", "Mumbai", 100, 150, 23000f, 14500f, "Breakfast, Pool, Gym, Guided Tour, Theater", "Breakfast, Pool, Gym"},
-                13{"Leonia", "Hyderabad", 500, 1000, 7500f, 2850f, "Theater, Play Ground, Multiple Cuisines, Spa", "Theater, Play Ground"},
+                {"Hilton", "Hyderabad", 200, 300, 2300f, 1500f, "Wifi, Breakfast, Club House", "Wifi"},
+                {"Mercure Grand", "New Delhi", 100, 100, 5000f, 3100f, "Wifi, Breakfast, Gym", "Breakfast"},
+                {"Taj", "Mumbai", 630, 190, 10000f, 2200f, "Wifi, Breakfast, Club, Gym, Taxi Service", "Wifi, Breakfast"},
+                {"Leela Palace", "Cochin", 50, 210, 7500f, 4000f, "Breakfast, In room Pool, Spa, Taxi Service, Wifi, Club, Gym", "Breakfast, Pool, Spa, Wifi"},
+                {"Novotel", "Hyderabad", 50, 210, 750f, 400f, "Breakfast, Taxi Service", "Breakfast"},
+                {"Grand Lotus", "Hyderabad", 50, 200, 12000f, 8000f, "Breakfast Pool", "Pool"},
+                {"Fort House Inn", "New Delhi", 5, 10, 3400f, 1200f, "Spa, Pool", "Spa"},
+                {"MGM Grande", "Mumbai", 500, 750, 10000f, 75000f, "Poker Table, Conference Room, Gym", "Conference Room, Gym"},
+                {"Grand Hilton", "New Delhi", 200, 400, 8000f, 4300f, "Premium View, Pool, Spa, Guided Tour", "Guided Tour, Pool, Spa"},
+                {"Ramada", "Cochin", 12, 50, 12000f, 5700f, "Indoor pool, Spa, Massage Center, Breakfast", "Spa, Pool, Breakfast"},
+                {"Vivanta", "Cochin", 80, 120, 18000f, 12000f, "Breakfast, Pool, Gym, Boat Ride, Spa", "Breakfast, Pool, Gym"},
+                {"Ritz Carlton", "Mumbai", 100, 150, 23000f, 14500f, "Breakfast, Pool, Gym, Guided Tour, Theater", "Breakfast, Pool, Gym"},
+                {"Leonia", "Hyderabad", 500, 1000, 7500f, 2850f, "Theater, Play Ground, Multiple Cuisines, Spa", "Theater, Play Ground"},
         };
         try {
             PreparedStatement ps = conn.prepareStatement("insert into hotels (name, location, numDexRooms, numStdRooms, dexRoomRate, stdRoomRate, dexRoomAmenities, stdRoomAmenities) values (?, ?, ?, ?, ?, ?, ?, ?)");
