@@ -10,7 +10,11 @@
     <children>
       <grid id="27dc6" binding="cardPanel" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints>
+<<<<<<< HEAD
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+=======
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
         </constraints>
         <properties>
           <background color="-921103"/>
@@ -26,8 +30,13 @@
             </constraints>
             <properties>
               <background color="-921103"/>
+<<<<<<< HEAD
               <minimumSize width="400" height="400"/>
               <preferredSize width="400" height="400"/>
+=======
+              <minimumSize width="200" height="200"/>
+              <preferredSize width="200" height="200"/>
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
             </properties>
             <border type="none"/>
             <children>
@@ -173,8 +182,13 @@
             </constraints>
             <properties>
               <background color="-921103"/>
+<<<<<<< HEAD
               <minimumSize width="400" height="400"/>
               <preferredSize width="400" height="400"/>
+=======
+              <minimumSize width="200" height="200"/>
+              <preferredSize width="200" height="200"/>
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
             </properties>
             <border type="none"/>
             <children/>
@@ -186,8 +200,13 @@
             </constraints>
             <properties>
               <background color="-921103"/>
+<<<<<<< HEAD
               <minimumSize width="400" height="400"/>
               <preferredSize width="400" height="400"/>
+=======
+              <minimumSize width="200" height="200"/>
+              <preferredSize width="200" height="200"/>
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
             </properties>
             <border type="none"/>
             <children/>
@@ -198,18 +217,33 @@
               <card name="Card5"/>
             </constraints>
             <properties>
+<<<<<<< HEAD
               <minimumSize width="400" height="400"/>
               <preferredSize width="400" height="400"/>
             </properties>
             <border type="none"/>
             <children>
               <component id="589da" class="javax.swing.JTable" binding="hotelTable" custom-create="true">
+=======
+              <minimumSize width="200" height="200"/>
+              <preferredSize width="200" height="200"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="67d8e" class="javax.swing.JTable" binding="hotelTable">
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
+<<<<<<< HEAD
                 <properties/>
+=======
+                <properties>
+                  <rowMargin value="1"/>
+                </properties>
+>>>>>>> c3b2480e4082e4db12290da1e6bf8f19fdf12dd0
               </component>
             </children>
           </grid>

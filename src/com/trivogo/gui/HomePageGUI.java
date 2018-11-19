@@ -49,6 +49,7 @@ public class HomePageGUI {
     DefaultTableModel model;
     String locationName;
 
+
     public HomePageGUI() {
         frame1 = new JFrame();
         frame1.add(parentPanel);
@@ -82,6 +83,16 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
+
+        waitlistButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(waitlistPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+            }
+        });
         inDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -93,13 +104,12 @@ public class HomePageGUI {
         });
         searchButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent actionEvent) {
                 String location = (String) locationBox.getSelectedItem();
                 java.time.LocalDate inDate = inDatePicker.getDate();
                 java.time.LocalDate outDate = outDatePicker.getDate();
                 int noOfPeople = (int) peopleSpinner.getValue();
                 int noOfRoom = (int) roomsSpinner.getValue();
-
                 cardPanel.removeAll();
                 cardPanel.add(hotelPanel);
                 cardPanel.repaint();
@@ -114,12 +124,14 @@ public class HomePageGUI {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+
         hotelTable = new JTable();
         model = new DefaultTableModel();
         model.addColumn("Hotel Name");
         model.addColumn("Rating");
 
         hotelTable.setModel(model);
+
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
 
