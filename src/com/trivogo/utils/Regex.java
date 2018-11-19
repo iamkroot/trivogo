@@ -19,5 +19,4 @@ public class Regex {
         Matcher matcher = DATE_REGEX .matcher(date);
         return matcher.find();
     }
-
 }

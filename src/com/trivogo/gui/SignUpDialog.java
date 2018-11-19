@@ -74,7 +74,7 @@ public class SignUpDialog extends JDialog {
         String address = addressField.getText();
         String email = emailField.getText();
         String username = usernameField.getText();
-        String date = dobPicker.getDateStringOrEmptyString(); // date is in yyyy-MM-dd format
+        java.time.LocalDate date = dobPicker.getDate(); // date is in yyyy-MM-dd format
         char[] password = passwordField1.getPassword();
         {
             if (name.length() == 0) {
@@ -101,9 +101,9 @@ public class SignUpDialog extends JDialog {
                         "Username Field Empty",
                         JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (!validate_date(date)) {
+            } else if (!dobPicker.isDateAllowed(dobPicker.getDate())) {
                 JOptionPane.showMessageDialog(null,
-                        "Date of Birth must be in dd/mm/yyyy format with the leading zeros if necessary.",
+                        "Date of Birth must be in proper format.",
                         "Date of Birth Invalid",
                         JOptionPane.ERROR_MESSAGE);
                 return;
@@ -140,13 +140,13 @@ public class SignUpDialog extends JDialog {
         // TODO: place custom component creation code here
         final LocalDate today = LocalDate.now();
         DatePickerSettings dobSettings = new DatePickerSettings();
+        dobSettings.setFormatForDatesCommonEra("d MMM yyyy");
+        dobSettings.setAllowKeyboardEditing(true);
         dobPicker = new DatePicker(dobSettings);
-        dobPicker.setDate(today.minusYears(18));
         dobSettings.setAllowEmptyDates(false);
-        dobSettings.setDateRangeLimits(null, today.minusYears(18));
-        dobSettings.setFormatForDatesCommonEra("dd/MM/YYYY");
-
-
+        dobSettings.setAllowKeyboardEditing(true);
+        dobSettings.setDateRangeLimits(today.minusYears(118), today.minusYears(18));
+        dobPicker.setDate(today.minusYears(18));
     }
 
 }

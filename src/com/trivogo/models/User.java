@@ -26,6 +26,14 @@ public class User {
         setEmail(email);
         this.dob = Dob;
     }
+    public User(String username, String fullName, String email, String address, java.time.LocalDate Dob, String password) {
+        setFullName(fullName);
+        setAddress(address);
+        setUsername(username);
+        setPassword(password);
+        setEmail(email);
+        this.dob = java.sql.Date.valueOf(Dob);
+    }
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
@@ -47,7 +55,7 @@ public class User {
     }
 
     public void setDob(String Dob) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         try {
             dob = sdf.parse(Dob);
         } catch (java.text.ParseException pe){
