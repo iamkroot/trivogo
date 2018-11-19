@@ -94,6 +94,11 @@ public class HomePageGUI {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                String location = (String) locationBox.getSelectedItem();
+                java.time.LocalDate inDate = inDatePicker.getDate();
+                java.time.LocalDate outDate = outDatePicker.getDate();
+                int noOfPeople = (int) peopleSpinner.getValue();
+                int noOfRoom = (int) roomsSpinner.getValue();
             }
         });
     }
