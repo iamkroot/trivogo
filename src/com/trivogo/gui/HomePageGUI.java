@@ -1,11 +1,14 @@
 package com.trivogo.gui;
 
+import com.trivogo.models.User;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HomePageGUI {
-    private  JFrame frame1;
+    private User user;
+    private JFrame frame1;
     private JPanel cardPanel;
     private JPanel homePanel;
     private JPanel newBookingPanel;
@@ -32,7 +35,8 @@ public class HomePageGUI {
     private JButton previousBookingButton;
     private JTable hotelTable;
 
-    public HomePageGUI() {
+    public HomePageGUI(User user) {
+        this.user = user;
         frame1 = new JFrame();
         frame1.add(parentPanel);
 
@@ -40,7 +44,7 @@ public class HomePageGUI {
 
         frame1.setSize(700,700);
         frame1.setVisible(true);
-
+        frame1.setAlwaysOnTop(true);
 
         searchHotelButton.addActionListener(new ActionListener() {
             @Override
@@ -73,7 +77,4 @@ public class HomePageGUI {
         });
     }
 
-    public static void main(String args[]) {
-        HomePageGUI c1 = new HomePageGUI();
-    }
 }
