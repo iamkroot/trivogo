@@ -30,6 +30,7 @@ public class HomePageGUI {
     private JPanel parentPanel;
     private JLabel logoLabel;
     private JButton previousBookingButton;
+    private JTable hotelTable;
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -39,6 +40,8 @@ public class HomePageGUI {
 
         frame1.setSize(700,700);
         frame1.setVisible(true);
+
+
         searchHotelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,7 +51,8 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
-        oldBookingsButton.addActionListener(new ActionListener() {
+
+        previousBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardPanel.removeAll();
@@ -57,20 +61,12 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
+
         waitlistButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardPanel.removeAll();
                 cardPanel.add(waitlistPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
-            }
-        });
-        homeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(homePanel);
                 cardPanel.repaint();
                 cardPanel.revalidate();
             }

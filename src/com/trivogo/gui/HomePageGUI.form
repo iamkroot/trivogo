@@ -105,14 +105,6 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="32715" class="javax.swing.JButton" binding="homeButton">
-                <constraints>
-                  <grid row="12" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Home"/>
-                </properties>
-              </component>
               <component id="92b15" class="javax.swing.JButton" binding="searchButton">
                 <constraints>
                   <grid row="12" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -215,11 +207,16 @@
             </properties>
             <border type="none"/>
             <children>
-              <vspacer id="9e128">
+              <component id="67d8e" class="javax.swing.JTable" binding="hotelTable">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
                 </constraints>
-              </vspacer>
+                <properties>
+                  <rowMargin value="1"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>
