@@ -127,6 +127,7 @@ class DBConn {
                 {2, "LibertyMedia", "standard", 56, "2018-12-13", "2018-12-19", "CONFIRMED"},
                 {10, "RahulNair", "standard", 1, "2018-12-23", "2018-12-28", "WAITLIST"},
                 {2, "RohanBhatt", "standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"}
+                {3, "RahulMohan", "deluxe", 1, "2018-11-21", "2018-12-02", "CONFIRMED"}
         };
     }
     static void closeConn() {
