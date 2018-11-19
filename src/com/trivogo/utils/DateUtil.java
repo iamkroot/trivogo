@@ -14,4 +14,8 @@ public class DateUtil {
         }
         return date;
     }
+    public static String convertToDBFormat(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
+    }
 }

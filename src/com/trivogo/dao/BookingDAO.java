@@ -1,9 +1,6 @@
 package com.trivogo.dao;
 
-import com.trivogo.models.Booking;
-import com.trivogo.models.Hotel;
-import com.trivogo.models.HotelRoom;
-import com.trivogo.models.User;
+import com.trivogo.models.*;
 import com.trivogo.utils.DateUtil;
 
 import java.sql.*;
@@ -15,14 +12,15 @@ public class BookingDAO {
     public static int newBooking(Booking booking) {
         Connection conn = DBConn.getConn();
         try {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (hotelID, user, roomType, numRooms, checkInDate, checkOutDate, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (hotelID, user, roomType, numRooms, checkInDate, checkOutDate, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, booking.getHotel().getId());
             ps.setString(2, booking.getUser().getUsername());
             ps.setString(3, booking.getRoom().getType());
             ps.setInt(4, booking.getNumOfRooms());
-            ps.setDate(5, (Date) booking.getCheckInDate());
-            ps.setDate(6, (Date) booking.getCheckOutDate());
+            ps.setString(5, DateUtil.convertToDBFormat(booking.getCheckInDate()));
+            ps.setString(6, DateUtil.convertToDBFormat(booking.getCheckOutDate()));
             ps.setString(7, booking.getStatus());
+            ps.setString(8, booking.getHotel().getLocation());
             ps.executeUpdate();
             ps.close();
             ps = conn.prepareStatement("SELECT * FROM bookings ORDER BY id DESC LIMIT 1;");
@@ -88,5 +86,28 @@ public class BookingDAO {
             e.printStackTrace();
         }
         return bookings;
+    }
+
+    public static int getNumAvailableRooms(SearchParameters params) {
+        String checkInDate = DateUtil.convertToDBFormat(params.getCheckInDate());
+        String checkOutDate = DateUtil.convertToDBFormat(params.getCheckOutDate());
+        Connection conn = DBConn.getConn();
+        int numBookedRooms = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT numRooms FROM bookings WHERE checkInDate < ? AND checkOutDate > ?" +
+                    "AND location = ? AND status = 'CONFIRMED'");
+            ps.setString(1, checkOutDate);
+            ps.setString(2, checkInDate);
+            ps.setString(3, params.getLocation().getLocationName());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                numBookedRooms += rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Location location = params.getLocation();
+        int totalRooms = location.getNumDeluxeRooms() + location.getNumStandardRooms();
+        return totalRooms - numBookedRooms;
     }
 }

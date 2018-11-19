@@ -1,6 +1,7 @@
 package com.trivogo.dao;
 
-import com.trivogo.models.User;
+import com.trivogo.models.*;
+import com.trivogo.utils.DateUtil;
 import com.trivogo.utils.Hasher;
 
 import java.sql.Connection;
@@ -35,7 +36,8 @@ class DBConn {
 
     public static void populateDB() {
         conn = getConn();
-        populateHotels();
+//        populateHotels();
+        populateBookings();
 //        populateUsers();
     }
 
@@ -113,7 +115,6 @@ class DBConn {
             e.printStackTrace();
         }
     }
-    // 1 vg pp dv asdf
 
     private static void populateBookings() {
         Object[][] bookingData = {
@@ -124,11 +125,22 @@ class DBConn {
                 {5, "asdf", "deluxe", 10, "2018-11-28", "2018-12-03", "CONFIRMED"},
                 {13, "pp", "deluxe", 3, "2018-12-12", "2018-12-15", "CONFIRMED"},
                 {3, "1", "deluxe", 2, "2018-12-20", "2019-01-03", "CONFIRMED"},
-                {10, "sadf", "deluxe", 12, "2018-12-15", "2019-01-05", "CONFIRMED"},
+                {10, "asdf", "deluxe", 12, "2018-12-15", "2019-01-05", "CONFIRMED"},
                 {2, "dv", "standard", 56, "2018-12-13", "2018-12-19", "CONFIRMED"},
                 {10, "pp", "standard", 1, "2018-12-23", "2018-12-28", "WAITLIST"},
                 {2, "asdf", "standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"}
         };
+        for (int i = 0; i < bookingData.length; i++) {
+            Object[] data = bookingData[i];
+            Hotel hotel = HotelDAO.getHotelByID((Integer) data[0]);
+            HotelRoom hr;
+            if(data[2].equals("deluxe"))
+                hr = hotel.getDexRoom();
+            else
+                hr = hotel.getStdRoom();
+            Booking booking = new Booking(hotel, UserDAO.getUser((String) data[1]), hr, (Integer) data[3], DateUtil.readFromDB((String) data[4]), DateUtil.readFromDB((String) data[5]), (String) data[6]);
+            BookingDAO.newBooking(booking);
+        }
     }
     static void closeConn() {
         try {

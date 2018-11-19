@@ -1,7 +1,6 @@
 package com.trivogo.dao;
 
 import java.sql.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,7 +17,7 @@ public class UserDAO {
             ps.setString(2, user.getFullName());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getAddress());
-            ps.setString(5, (new SimpleDateFormat("yyyy-MM-dd")).format(user.getDob()));
+            ps.setString(5, DateUtil.convertToDBFormat(user.getDob()));
             ps.setString(6, user.getPassword());
             ps.executeUpdate();
             ps.close();
