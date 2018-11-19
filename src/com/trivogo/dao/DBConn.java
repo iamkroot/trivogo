@@ -88,7 +88,7 @@ class DBConn {
                 {"Grand Lotus", "Hyderabad", 50, 200, 12000f, 8000f, "Breakfast Pool", "Pool"},
                 {"Fort House Inn", "New Delhi", 5, 10, 3400f, 1200f, "Spa, Pool", "Spa"},
                 {"MGM Grande", "Mumbai", 500, 750, 10000f, 75000f, "Poker Table, Conference Room, Gym", "Conference Room, Gym"},
-                {"Hilton", "New Delhi", 200, 400, 8000f, 4300f, "Premium View, Pool, Spa, Guided Tour", "Guided Tour, Pool, Spa"},
+                {"Grand Hilton", "New Delhi", 200, 400, 8000f, 4300f, "Premium View, Pool, Spa, Guided Tour", "Guided Tour, Pool, Spa"},
                 {"Ramada", "Cochin", 12, 50, 12000f, 5700f, "Indoor pool, Spa, Massage Center, Breakfast", "Spa, Pool, Breakfast"},
                 {"Vivanta", "Cochin", 80, 120, 18000f, 12000f, "Breakfast, Pool, Gym, Boat Ride, Spa", "Breakfast, Pool, Gym"},
                 {"Ritz Carlton", "Mumbai", 100, 150, 23000f, 14500f, "Breakfast, Pool, Gym, Guided Tour, Theater", "Breakfast, Pool, Gym"},
@@ -116,6 +116,18 @@ class DBConn {
 
     private static void populateBookings() {
         Object[][] bookingData = {
+                {"Hilton", "Tom Cruise", "Deluxe", 5, "2018/11/19", "2018/11/23", "CONFIRMED"},
+                {"Leela Palace", "Kruut Patel", "Standard", 1,  "2018/12/1", "2018/12/2", "CONFIRMED"},
+                {"Grand Hilton", "Guru Ram", "Standard", 13, "2018/11/23", "2018/11/27", "CONFIRMED"},
+                {"Fort House Inn", "Gurpreet Singh", "Deluxe", 1, "2018/12/23", "2019/01/02", "CONFIRMED"},
+                {"Novotel", "Arjun Reddy", "Deluxe", 10, "2018/11/28", "2018/12/03", "CONFIRMED"},
+                {"Leonia", "Shah Rukh Khan", "Deluxe", 3, "2018/12/12", "2018/12/15", "CONFIRMED"},
+                {"Taj", "Amitabh Bachchan", "Deluxe", 2, "2018/12/20", "2019/01/03", "CONFIRMED"},
+                {"Ramada", "Alphabet Inc", "Deluxe", 12, "2018/12/15", "2019/01/05", "CONFIRMED"},
+                {"Mercure Grand", "Liberty Media", "Standard", 56, "2018/12/13", "2018/12/19", "CONFIRMED"},
+                {"Ramada", "Rahul Nair", "Deluxe", 1, "2018/12/23", "2018/12/28", "WAITLIST"},
+                {"Mercure Grand", "Rohan Bhatt", "Standard", 1, "2018/12/01", "2018/12/02", "CONFIRMED"},
+                /*{"HOTELNAME", "USERNAME", "Standard", NUMROOM, "INDATE", "OUTDATE", "STATUS"}*/
 
         };
     }
