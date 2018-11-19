@@ -6,16 +6,14 @@ import java.awt.event.ActionListener;
 
 public class HomePageGUI {
     private  JFrame frame1;
-    private JPanel parentPanel;
+    private JPanel cardPanel;
     private JPanel homePanel;
     private JPanel newBookingPanel;
     private JPanel previousBookingsPanel;
-    private JLabel logoLabel;
-    private JButton newBookingButton;
+    private JButton searchHotelButton;
     private JButton oldBookingsButton;
     private JButton waitlistButton;
     private JPanel waitlistPanel;
-    private JLabel logo;
     private JLabel locationLabel;
     private JComboBox locationBox;
     private JLabel checkinLabel;
@@ -28,7 +26,10 @@ public class HomePageGUI {
     private JSpinner roomsSpinner;
     private JButton homeButton;
     private JButton searchButton;
-    private JButton button3;
+    private JPanel hotelPanel;
+    private JPanel parentPanel;
+    private JLabel logoLabel;
+    private JButton previousBookingButton;
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -36,42 +37,42 @@ public class HomePageGUI {
 
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame1.setSize(500,500);
+        frame1.setSize(700,700);
         frame1.setVisible(true);
-        newBookingButton.addActionListener(new ActionListener() {
+        searchHotelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentPanel.removeAll();
-                parentPanel.add(newBookingPanel);
-                parentPanel.repaint();
-                parentPanel.revalidate();
+                cardPanel.removeAll();
+                cardPanel.add(newBookingPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
         oldBookingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentPanel.removeAll();
-                parentPanel.add(previousBookingsPanel);
-                parentPanel.repaint();
-                parentPanel.revalidate();
+                cardPanel.removeAll();
+                cardPanel.add(previousBookingsPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
         waitlistButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentPanel.removeAll();
-                parentPanel.add(waitlistPanel);
-                parentPanel.repaint();
-                parentPanel.revalidate();
+                cardPanel.removeAll();
+                cardPanel.add(waitlistPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
         homeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentPanel.removeAll();
-                parentPanel.add(homePanel);
-                parentPanel.repaint();
-                parentPanel.revalidate();
+                cardPanel.removeAll();
+                cardPanel.add(homePanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
     }
