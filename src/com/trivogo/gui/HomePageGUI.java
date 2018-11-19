@@ -2,17 +2,21 @@ package com.trivogo.gui;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.trivogo.dao.HotelDAO;
+import com.trivogo.models.Hotel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.util.Vector;
+import java.util.List;
 
 public class HomePageGUI {
-    private  JFrame frame1;
+    private JFrame frame1;
     private JPanel cardPanel;
     private JPanel homePanel;
     private JPanel newBookingPanel;
@@ -42,26 +46,22 @@ public class HomePageGUI {
     DatePickerSettings outDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
     SpinnerNumberModel roomSpinnerNumberModel;
+    DefaultTableModel model;
+    String locationName;
 
     public HomePageGUI() {
         frame1 = new JFrame();
         frame1.add(parentPanel);
-
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame1.setSize(700,700);
+        frame1.setSize(700, 700);
         frame1.setVisible(true);
+        locationName = "Hyderabad";
+//        hotelPanel.add(new JLabel("AAAAAA"));
+        List<Hotel> hotels = HotelDAO.getHotelsByLocation("Hyderabad");
 
-
-        searchHotelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(newBookingPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
-            }
-        });
+        for (Hotel hotel : hotels) {
+            model.addRow(new Object[]{hotel.getName(), "4 star"});
+        }
 
         previousBookingButton.addActionListener(new ActionListener() {
             @Override
@@ -93,7 +93,11 @@ public class HomePageGUI {
         });
         searchButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(hotelPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
     }
@@ -104,6 +108,12 @@ public class HomePageGUI {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+        hotelTable = new JTable();
+        model = new DefaultTableModel();
+        model.addColumn("Hotel Name");
+        model.addColumn("Rating");
+
+        hotelTable.setModel(model);
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
 
