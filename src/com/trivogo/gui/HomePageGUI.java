@@ -42,12 +42,18 @@ public class HomePageGUI {
     private JTable hotelTable;
     private DatePicker inDatePicker;
     private DatePicker outDatePicker;
+    private JButton viewReviewButton;
+    private JButton viewRoomsButton;
+    private JLabel hotelNameLabel;
+    private JLabel ratingLabel;
+    private JPanel roomsPanel;
+    private JTable roomsTable;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
     SpinnerNumberModel roomSpinnerNumberModel;
     DefaultTableModel model;
-    String locationName;
+    String location;
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -55,13 +61,7 @@ public class HomePageGUI {
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame1.setSize(700, 700);
         frame1.setVisible(true);
-        locationName = "Hyderabad";
-//        hotelPanel.add(new JLabel("AAAAAA"));
-        List<Hotel> hotels = HotelDAO.getHotelsByLocation("Hyderabad");
 
-        for (Hotel hotel : hotels) {
-            model.addRow(new Object[]{hotel.getName(), "4 star"});
-        }
 
         previousBookingButton.addActionListener(new ActionListener() {
             @Override
@@ -94,16 +94,39 @@ public class HomePageGUI {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String location = (String) locationBox.getSelectedItem();
+                location = (String) locationBox.getSelectedItem();
                 java.time.LocalDate inDate = inDatePicker.getDate();
                 java.time.LocalDate outDate = outDatePicker.getDate();
                 int noOfPeople = (int) peopleSpinner.getValue();
                 int noOfRoom = (int) roomsSpinner.getValue();
+                List<Hotel> hotels = HotelDAO.getHotelsByLocation(location);
+
+                for (Hotel hotel : hotels) {
+                    model.addRow(new Object[]{hotel.getName(), "4 star"});
+                }
+                for(int i=0; i<hotelTable.getRowCount(); i++) {
+                    hotelTable.setRowHeight(i, 50);
+                }
 
                 cardPanel.removeAll();
                 cardPanel.add(hotelPanel);
                 cardPanel.repaint();
                 cardPanel.revalidate();
+            }
+        });
+        searchHotelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(newBookingPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+                if (hotelTable.getRowCount() > 0) {
+                    for (int i = hotelTable.getRowCount() - 1; i > -1; i--) {
+                        model.removeRow(i);
+                    }
+                }
+
             }
         });
     }
@@ -114,7 +137,13 @@ public class HomePageGUI {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        hotelTable = new JTable();
+        hotelTable = new JTable() {
+            private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
         model = new DefaultTableModel();
         model.addColumn("Hotel Name");
         model.addColumn("Rating");
