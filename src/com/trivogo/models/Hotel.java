@@ -57,6 +57,13 @@ public class Hotel {
         return dexRoom;
     }
 
+    public HotelRoom getRoomInfo(String type) {
+        if(type.equals("deluxe"))
+            return dexRoom;
+        else
+            return stdRoom;
+    }
+
     public float getRating() {
         return rating;
     }

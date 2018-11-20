@@ -3,8 +3,7 @@ package com.trivogo.gui;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.dao.HotelDAO;
-import com.trivogo.models.Hotel;
-import com.trivogo.models.HotelRoom;
+import com.trivogo.models.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -19,6 +18,7 @@ import java.util.Vector;
 import java.util.List;
 
 public class HomePageGUI {
+    private User user;
     private JFrame frame1;
     private JPanel cardPanel;
     private JPanel homePanel;
@@ -88,9 +88,11 @@ public class HomePageGUI {
     HotelRoom stdRoom;
     HotelRoom deluxeRoom;
     String verificationNumber;
+    Booking booking;
+    SearchParameters params;
 
-
-    public HomePageGUI() {
+    public HomePageGUI(User user) {
+        this.user = user;
         frame1 = new JFrame();
         frame1.add(parentPanel);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -134,6 +136,7 @@ public class HomePageGUI {
                 java.time.LocalDate outDate = outDatePicker.getDate();
                 int noOfPeople = (int) peopleSpinner.getValue();
                 int noOfRoom = (int) roomsSpinner.getValue();
+                params = new SearchParameters(location, java.sql.Date.valueOf(inDate), java.sql.Date.valueOf(outDate), noOfPeople, noOfRoom);
                 hotels = HotelDAO.getHotelsByLocation(location);
 
                 for (Hotel hotel : hotels) {
@@ -298,10 +301,25 @@ public class HomePageGUI {
                 }
             }
         });
-    }
+        confirmBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                booking = new Booking(hotel, user, hotel.getRoomInfo("deluxe"), params, "PENDING" );
+                if (params.getNumRooms() <= com.trivogo.dao.BookingDAO.getNumAvailableRooms(booking)) {
 
-    public static void main(String args[]) {
-        HomePageGUI c1 = new HomePageGUI();
+                }
+                else {
+                    int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
+                            " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
+                    if(a == JOptionPane.YES_OPTION){
+                        booking.setStatus("WAITLIST");
+                    }
+                    else{
+
+                    }
+                }
+            }
+        });
     }
 
     private void createUIComponents() {

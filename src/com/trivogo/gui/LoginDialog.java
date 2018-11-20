@@ -73,7 +73,7 @@ public class LoginDialog extends JDialog {
                         "Password Incorrect",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                HomePageGUI.main(null);
+                new HomePageGUI(user);
                 dispose();
             }
         } else {
