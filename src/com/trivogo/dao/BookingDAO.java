@@ -10,17 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class BookingDAO {
-    public static Booking newBooking(User user, SearchParameters parameters, Hotel hotel, HotelRoom hotelRoom) {
-        Booking booking = new Booking(hotel, user, hotelRoom, parameters,"PENDING");
-        if (getNumAvailableRooms(parameters) < parameters.getNumRooms()) {
-            booking.setStatus("WAITLIST");  // don't store in db yet, ask user to enroll in waiting list
-            booking.setBookingID(-1);
-        } else {
-            booking.setStatus("CONFIRMED");
-            booking.setBookingID(addBooking(booking));
-        }
-        return booking;
-    }
     public static int addBooking(Booking booking) {
         Connection conn = DBConn.getConn();
         try {
@@ -99,18 +88,20 @@ public class BookingDAO {
         }
         return bookings;
     }
-    public static int getNumAvailableRooms(SearchParameters parameters) {
-        return getNumAvailableRooms(parameters.getCheckInDate(), parameters.getCheckOutDate(), parameters.getLocation());
+    public static int getNumAvailableRooms(Booking booking) {
+        return getNumAvailableRooms(booking.getCheckInDate(), booking.getCheckOutDate(), booking.getHotel(), booking.getRoom());
     }
-    public static int getNumAvailableRooms(Date checkInDate, Date checkOutDate, Location location) {
+    public static int getNumAvailableRooms(Date checkInDate, Date checkOutDate, Hotel hotel, HotelRoom hotelRoom) {
         Connection conn = DBConn.getConn();
         int numBookedRooms = 0;
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT numRooms FROM bookings WHERE checkInDate < ? AND checkOutDate > ?" +
-                    "AND location = ? AND status = 'CONFIRMED'");
+                    "AND location = ? AND hotelID = ? AND roomType = ? AND (status = 'CONFIRMED' OR status = 'CONFIRMED')");
             ps.setString(1, DateUtil.convertToDBFormat(checkOutDate));
             ps.setString(2, DateUtil.convertToDBFormat(checkInDate));
-            ps.setString(3, location.getLocationName());
+            ps.setString(3, hotel.getLocation());
+            ps.setInt(4, hotel.getId());
+            ps.setString(5, hotelRoom.getType());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 numBookedRooms += rs.getInt(1);
@@ -118,7 +109,13 @@ public class BookingDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        int totalRooms = location.getNumDeluxeRooms() + location.getNumStandardRooms();
+        int totalRooms;
+        if(hotelRoom.getType().equals("Deluxe")){
+            totalRooms = hotel.getTotalDeluxeRooms();
+        }
+        else
+            totalRooms = hotel.getTotalStandardRooms();
         return totalRooms - numBookedRooms;
     }
+
 }
