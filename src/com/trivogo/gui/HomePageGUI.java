@@ -87,6 +87,18 @@ public class HomePageGUI {
     private JPanel modifyPanel;
     private JLabel dueLabel;
     private JLabel paymentDueLabel;
+    private JLabel cardNumLabel;
+    private JTextField cardNumField;
+    private JLabel dateExpLabel;
+    private JTextField dateExpField;
+    private JLabel cvvLabel;
+    private JTextField cvvField;
+    private JButton confirmButton;
+    private JButton backPrevButton;
+    private JLabel newInDateLabel;
+    private JTextField textField1;
+    private JLabel newOutDateLabel;
+    private JTextField textField2;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
@@ -400,6 +412,60 @@ public class HomePageGUI {
                 cardPanel.repaint();
                 cardPanel.revalidate();
 
+            }
+        });
+        backPrevButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(previousBookingsPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    if(bookingsTable.getSelectedRow() != -1) {
+                        booking = bookings.get(bookingsTable.getSelectedRow());
+                    }
+
+                java.util.Date today = new Date();
+                if((String.valueOf(today.toString()) - String.valueOf(booking.getCheckInDate().toString())) == 1 ) {
+                    cardNumLabel.setVisible(true);
+                    cardNumField.setVisible(true);
+                    dateExpLabel.setVisible(true);
+                    dateExpField.setVisible(true);
+                    cvvField.setVisible(true);
+                    cvvLabel.setVisible(true);
+                    confirmButton.setText("Confirm and Pay");
+                }
+                else {
+                    cardNumLabel.setVisible(false);
+                    cardNumField.setVisible(false);
+                    dateExpLabel.setVisible(false);
+                    dateExpField.setVisible(false);
+                    cvvField.setVisible(false);
+                    cvvLabel.setVisible(false);
+                    confirmButton.setText("Confirm");
+                }
+                cardPanel.removeAll();
+                cardPanel.add(cancelPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+            }
+        });
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(booking.getPayableAmount() != 0) {
+                    JOptionPane.showMessageDialog(null,"Payment Successful. Booking cancelled.");
+                    booking.setStatus("CANCELLED");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
+                    booking.setStatus("CANCELLED");
+                }
             }
         });
     }
