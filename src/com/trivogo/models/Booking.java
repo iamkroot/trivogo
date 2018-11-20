@@ -10,6 +10,10 @@ public class Booking {
     private int numOfRooms;
     private int bookingID;
     private String status;
+
+    public Booking(Hotel hotel, User user, HotelRoom room, SearchParameters params, String status) {
+        this(hotel, user, room, params.getNumRooms(), params.getCheckInDate(), params.getCheckOutDate(), status);
+    }
     
     public Booking(Hotel hotel, User user, HotelRoom room, int numRooms, java.util.Date inDate, java.util.Date outDate, String stat) {
         setHotel(hotel);
