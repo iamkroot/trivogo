@@ -52,4 +52,11 @@ public class Hotel {
     public HotelRoom getDexRoom() {
         return dexRoom;
     }
+
+    public HotelRoom getRoomInfo(String type) {
+        if(type.equals("deluxe"))
+            return dexRoom;
+        else
+            return stdRoom;
+    }
 }
