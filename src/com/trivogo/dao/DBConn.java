@@ -165,6 +165,20 @@ class DBConn {
             BookingDAO.addBooking(booking);
         }
     }
+
+    private static void populateReviews() {
+        Object[][] reviewData = {
+                // {bookingID, hotelID, username, description, params}
+                {1, 2, "vg", "Ossum", 7, 2, 9, 5, 6},
+        };
+        for (Object[] data: reviewData) {
+            Hotel hotel = HotelDAO.getHotelByID((Integer) data[1]);
+            User user = UserDAO.getUser((String) data[2]);
+            Review review = new Review(hotel, user, (String) data[3], (int) data[4], (int) data[5], (int) data[6], (int) data[7], (int) data[8]);
+            ReviewDAO.addReview((Integer) data[0], review);
+        }
+    }
+
     static void closeConn() {
         try {
             if (conn != null && !conn.isClosed())
