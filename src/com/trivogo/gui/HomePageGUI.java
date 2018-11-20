@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Vector;
 import java.util.List;
 
@@ -135,7 +136,6 @@ public class HomePageGUI {
                 for(int i=0; i<bookingsTable.getRowCount(); i++) {
                     bookingsTable.setRowHeight(i, 30);
                 }
-
 
             }
         });
@@ -292,6 +292,10 @@ public class HomePageGUI {
                 dateOutLabel.setText(booking.getCheckOutDate().toString());
                 idBookingLabel.setText(String.valueOf(booking.getBookingID()));
                 statusBookingLabel.setText(booking.getStatus());
+                panButton.setSelected(false);
+                panField.setText("");
+                adhaarButton.setSelected(false);
+                adhaarField.setText("");
 
             }
         });
@@ -302,6 +306,8 @@ public class HomePageGUI {
                 cardPanel.add(roomsPanel);
                 cardPanel.repaint();
                 cardPanel.revalidate();
+                panButton.setSelected(false);
+                adhaarButton.setSelected(false);
             }
         });
         reviewsButton.addActionListener(new ActionListener() {
