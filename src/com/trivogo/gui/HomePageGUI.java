@@ -46,8 +46,8 @@ public class HomePageGUI {
     private JTable hotelTable;
     private DatePicker inDatePicker;
     private DatePicker outDatePicker;
+    private JButton reviewsButton;
     private JButton roomButton;
-    private JButton reviewButton;
     private JPanel roomsPanel;
     private JTable roomsTable;
     private JButton confirmBookingButton;
@@ -194,7 +194,7 @@ public class HomePageGUI {
 
             }
         });
-        reviewButton.addActionListener(new ActionListener() {
+        roomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
@@ -304,7 +304,7 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
-        roomButton.addActionListener(new ActionListener() {
+        reviewsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
@@ -316,12 +316,12 @@ public class HomePageGUI {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
+                    reviewsButton.setEnabled(true);
                     roomButton.setEnabled(true);
-                    reviewButton.setEnabled(true);
                 }
                 else {
+                    reviewsButton.setEnabled(false);
                     roomButton.setEnabled(false);
-                    reviewButton.setEnabled(false);
                 }
             }
         });

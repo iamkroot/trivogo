@@ -225,24 +225,6 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="1101" class="javax.swing.JButton" binding="reviewButton">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <enabled value="false"/>
-                  <text value="View Review"/>
-                </properties>
-              </component>
-              <component id="aadc0" class="javax.swing.JButton" binding="roomButton">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <enabled value="false"/>
-                  <text value="View Rooms"/>
-                </properties>
-              </component>
               <scrollpane id="7bf38">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -264,6 +246,24 @@
                   </component>
                 </children>
               </scrollpane>
+              <component id="aadc0" class="javax.swing.JButton" binding="reviewsButton">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <text value="View Review"/>
+                </properties>
+              </component>
+              <component id="1101" class="javax.swing.JButton" binding="roomButton">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <text value="View Room"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <grid id="988d5" binding="roomsPanel" layout-manager="GridLayoutManager" row-count="3" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
