@@ -60,6 +60,17 @@ public class BookingDAO {
         }
     }
 
+    public static void cancelBooking(int bookingID) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = 'CANCELLED' WHERE ROWID = ?");
+            ps.setInt(1, bookingID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static Booking fromResultSet(ResultSet rs) {
         Booking booking = null;
         try {
