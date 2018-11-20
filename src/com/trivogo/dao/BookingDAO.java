@@ -48,6 +48,17 @@ public class BookingDAO {
             e.printStackTrace();
         }
     }
+    private static void updateBooking(int bookingID, String status) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = ? WHERE ROWID = ?");
+            ps.setString(1, status);
+            ps.setInt(2, bookingID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void addReview(int bookingID, Review review) {
         try {
@@ -61,14 +72,11 @@ public class BookingDAO {
     }
 
     public static void cancelBooking(int bookingID) {
-        try {
-            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = 'CANCELLED' WHERE ROWID = ?");
-            ps.setInt(1, bookingID);
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        updateBooking(bookingID, "CANCELLED");
+    }
+
+    public static void confirmWaitlistedBooking(int bookingID) {
+        updateBooking(bookingID, "CONFIRMED WAITLIST");
     }
 
     private static Booking fromResultSet(ResultSet rs) {
@@ -162,10 +170,5 @@ public class BookingDAO {
         else
             totalRooms = hotel.getTotalStandardRooms();
         return totalRooms - numBookedRooms;
-    }
-    public static void main(String args[]) {
-        Hotel hotel = HotelDAO.getHotelByID(2);
-        getHotelBookings(hotel);
-//        System.out.println(a);
     }
 }
