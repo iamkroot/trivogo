@@ -435,6 +435,7 @@ public class HomePageGUI {
                 java.util.Date today = new Date();
                     Long difference = (booking.getCheckInDate().getTime()-booking.getCheckOutDate().getTime())/86400000;
                     Integer y = difference.intValue();
+                int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y*(-1);
                 if( y == -1 || y == -2 ) {
                     cardNumLabel.setVisible(true);
                     cardNumField.setVisible(true);
@@ -443,7 +444,7 @@ public class HomePageGUI {
                     cvvField.setVisible(true);
                     cvvLabel.setVisible(true);
                     confirmButton.setText("Confirm and Pay");
-                    //JOptionPane.showMessageDialog(null, y.toString());
+                    paymentDueLabel.setText("Rs. "+ String.valueOf(price*0.5));
                 }
                 else {
                     cardNumLabel.setVisible(false);
@@ -453,6 +454,7 @@ public class HomePageGUI {
                     cvvField.setVisible(false);
                     cvvLabel.setVisible(false);
                     confirmButton.setText("Confirm");
+                    paymentDueLabel.setText("Rs. 0.0");
                 }
                 cardPanel.removeAll();
                 cardPanel.add(cancelPanel);
@@ -466,6 +468,7 @@ public class HomePageGUI {
                 if(booking.getPayableAmount() != 0) {
                     JOptionPane.showMessageDialog(null,"Payment Successful. Booking cancelled.");
                     booking.setStatus("CANCELLED");
+                    // TODO: 21/11/18 load data into table again 
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
