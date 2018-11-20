@@ -2,6 +2,7 @@ package com.trivogo.gui;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.trivogo.dao.BookingDAO;
 import com.trivogo.dao.HotelDAO;
 import com.trivogo.models.*;
 
@@ -176,6 +177,7 @@ public class HomePageGUI {
         viewRoomsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
                 if(hotelTable.getSelectedRow() != -1) {
                     hotel = hotels.get(hotelTable.getSelectedRow());
                 }
@@ -190,6 +192,7 @@ public class HomePageGUI {
                 for(int i=0; i<roomsTable.getRowCount(); i++) {
                     roomsTable.setRowHeight(i, 70);
                 }
+                confirmBookingButton.setEnabled(false);
             }
         });
         adhaarButton.addActionListener(new ActionListener() {
@@ -212,19 +215,6 @@ public class HomePageGUI {
                 adhaarField.setVisible(false);
             }
         });
-        confirmBookingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(verificationPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
-                panLabel.setVisible(false);
-                panField.setVisible(false);
-                adhaarField.setVisible(false);
-                adhaarLabel.setVisible(false);
-            }
-        });
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -245,6 +235,9 @@ public class HomePageGUI {
                 if(adhaarButton.isSelected()) {
                     verificationNumber = adhaarField.getText();
                     if(verificationNumber.length() == 12) {
+                        if(booking.getStatus().equals("PENDING"))
+                            booking.setStatus("CONFIRMED");
+                        BookingDAO.addBooking(booking);
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         cardPanel.removeAll();
                         cardPanel.add(summaryPanel);
@@ -258,6 +251,9 @@ public class HomePageGUI {
                 else if(panButton.isSelected()) {
                     verificationNumber = panField.getText();
                     if(verificationNumber.length() == 10) {
+                        if(booking.getStatus().equals("PENDING"))
+                            booking.setStatus("CONFIRMED");
+                        BookingDAO.addBooking(booking);
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         cardPanel.removeAll();
                         cardPanel.add(summaryPanel);
@@ -301,18 +297,44 @@ public class HomePageGUI {
                 }
             }
         });
+        roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if(hotelTable.getSelectedRow() != -1) {
+                    confirmBookingButton.setEnabled(true);
+                }
+                else {
+                    confirmBookingButton.setEnabled(false);
+                }
+            }
+        });
         confirmBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 booking = new Booking(hotel, user, hotel.getRoomInfo("deluxe"), params, "PENDING" );
                 if (params.getNumRooms() <= com.trivogo.dao.BookingDAO.getNumAvailableRooms(booking)) {
-
+                    cardPanel.removeAll();
+                    cardPanel.add(verificationPanel);
+                    cardPanel.repaint();
+                    cardPanel.revalidate();
+                    panLabel.setVisible(false);
+                    panField.setVisible(false);
+                    adhaarField.setVisible(false);
+                    adhaarLabel.setVisible(false);
                 }
                 else {
                     int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
                             " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
                     if(a == JOptionPane.YES_OPTION){
-                        booking.setStatus("WAITLIST");
+                        booking.setStatus("WAITLIST PENDING");
+                        cardPanel.removeAll();
+                        cardPanel.add(verificationPanel);
+                        cardPanel.repaint();
+                        cardPanel.revalidate();
+                        panLabel.setVisible(false);
+                        panField.setVisible(false);
+                        adhaarField.setVisible(false);
+                        adhaarLabel.setVisible(false);
                     }
                     else{
 
