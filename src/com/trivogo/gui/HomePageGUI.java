@@ -139,10 +139,7 @@ public class HomePageGUI {
                         bookingModel.removeRow(i);
                     }
                 }
-                cardPanel.removeAll();
-                cardPanel.add(previousBookingsPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(previousBookingsPanel);
                 bookings = BookingDAO.getUserBookings(user);
 
                 for (Booking booking : bookings) {
@@ -184,19 +181,13 @@ public class HomePageGUI {
                     hotelTable.setRowHeight(i, 50);
                 }
 
-                cardPanel.removeAll();
-                cardPanel.add(hotelPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+               switchToPanel(homePanel);
             }
         });
         searchHotelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(newBookingPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(newBookingPanel);
                 if (hotelTable.getRowCount() > 0) {
                     for (int i = hotelTable.getRowCount() - 1; i > -1; i--) {
                         hotelModel.removeRow(i);
@@ -221,10 +212,7 @@ public class HomePageGUI {
                 payableAmount = 0;
                 selectedHotelLabel.setText("Hotel : " + hotel.getName());
                 payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
-                cardPanel.removeAll();
-                cardPanel.add(roomsPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(roomsPanel);
                 deluxeRoom = hotel.getDexRoom();
                 stdRoom = hotel.getStdRoom();
                 roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate()});
@@ -258,10 +246,7 @@ public class HomePageGUI {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(hotelPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(hotelPanel);
                 if (roomsTable.getRowCount() > 0) {
                     for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
                         roomModel.removeRow(i);
@@ -280,10 +265,7 @@ public class HomePageGUI {
                         }
                         booking.setBookingID(BookingDAO.addBooking(booking));
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
-                        cardPanel.removeAll();
-                        cardPanel.add(summaryPanel);
-                        cardPanel.repaint();
-                        cardPanel.revalidate();
+                        switchToPanel(summaryPanel);
                     }
                     else {
                         JOptionPane.showMessageDialog(null,"Invalid Adhaar Card Number");
@@ -296,10 +278,7 @@ public class HomePageGUI {
                             booking.setStatus("CONFIRMED");
                         booking.setBookingID(BookingDAO.addBooking(booking));
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
-                        cardPanel.removeAll();
-                        cardPanel.add(summaryPanel);
-                        cardPanel.repaint();
-                        cardPanel.revalidate();
+                        switchToPanel(summaryPanel);
                     }
                     else {
                         JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
@@ -322,10 +301,7 @@ public class HomePageGUI {
         backRoomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(roomsPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(roomsPanel);
                 panButton.setSelected(false);
                 adhaarButton.setSelected(false);
                 payableAmount = 0;
@@ -364,9 +340,7 @@ public class HomePageGUI {
                         x = hotel.getDexRoom().getRate();
                     }
                     x *= params.getNumRooms();
-                    Long difference =  (params.getCheckOutDate().getTime()-params.getCheckInDate().getTime())/86400000;
-                    Integer y = difference.intValue();
-                    payableAmount = x*y;
+                    payableAmount = x*diffInDate(params.getCheckInDate(), params.getCheckOutDate());
 
                     payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
                 }
@@ -380,10 +354,7 @@ public class HomePageGUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("standard") : hotel.getRoomInfo("deluxe"), params, "PENDING" );
                 if (params.getNumRooms() <= com.trivogo.dao.BookingDAO.getNumAvailableRooms(booking)) {
-                    cardPanel.removeAll();
-                    cardPanel.add(verificationPanel);
-                    cardPanel.repaint();
-                    cardPanel.revalidate();
+                    switchToPanel(verificationPanel);
                     panLabel.setVisible(false);
                     panField.setVisible(false);
                     adhaarField.setVisible(false);
@@ -394,10 +365,7 @@ public class HomePageGUI {
                             " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
                     if(a == JOptionPane.YES_OPTION){
                         booking.setStatus("WAITLIST PENDING");
-                        cardPanel.removeAll();
-                        cardPanel.add(verificationPanel);
-                        cardPanel.repaint();
-                        cardPanel.revalidate();
+                        switchToPanel(verificationPanel);
                         panLabel.setVisible(false);
                         panField.setVisible(false);
                         adhaarField.setVisible(false);
@@ -417,9 +385,7 @@ public class HomePageGUI {
                         bookingModel.removeRow(i);
                     }
                 }
-
                 bookings = BookingDAO.getUserBookings(user);
-
                 for (Booking booking : bookings) {
                     bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
                             booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
@@ -428,32 +394,23 @@ public class HomePageGUI {
                 for(int i=0; i<bookingsTable.getRowCount(); i++) {
                     bookingsTable.setRowHeight(i, 30);
                 }
-                cardPanel.removeAll();
-                cardPanel.add(previousBookingsPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
-
+                switchToPanel(previousBookingsPanel);
             }
         });
         backPrevButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(previousBookingsPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(previousBookingsPanel);
             }
         });
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                    if(bookingsTable.getSelectedRow() != -1) {
-                        booking = bookings.get(bookingsTable.getSelectedRow());
-                    }
-
+                if(bookingsTable.getSelectedRow() != -1) {
+                    booking = bookings.get(bookingsTable.getSelectedRow());
+                }
+                int y =  diffInDate(params.getCheckInDate(), params.getCheckOutDate())
                 java.util.Date today = new Date();
-                    Long difference = (booking.getCheckInDate().getTime()-booking.getCheckOutDate().getTime())/86400000;
-                    Integer y = difference.intValue();
                 int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y*(-1);
                 if( y == -1 || y == -2 ) {
                     cardNumLabel.setVisible(true);
@@ -464,8 +421,7 @@ public class HomePageGUI {
                     cvvLabel.setVisible(true);
                     confirmButton.setText("Confirm and Pay");
                     paymentDueLabel.setText("Rs. "+ String.valueOf(price*0.5));
-                }
-                else {
+                }else {
                     cardNumLabel.setVisible(false);
                     cardNumField.setVisible(false);
                     dateExpLabel.setVisible(false);
@@ -475,10 +431,7 @@ public class HomePageGUI {
                     confirmButton.setText("Confirm");
                     paymentDueLabel.setText("Rs. 0.0");
                 }
-                cardPanel.removeAll();
-                cardPanel.add(cancelPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
+                switchToPanel(cancelPanel);
             }
         });
         confirmButton.addActionListener(new ActionListener() {
@@ -577,5 +530,17 @@ public class HomePageGUI {
 
         roomSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
         roomsSpinner = new JSpinner(roomSpinnerNumberModel);
+    }
+
+    private void switchToPanel(JPanel jpanel){
+        cardPanel.removeAll();
+        cardPanel.add(jpanel);
+        cardPanel.repaint();
+        cardPanel.revalidate();
+    }
+
+    private int diffInDate(Date d1, Date d2){
+        Long difference =  (d1.getTime()-d2.getTime())/86400000;
+        Integer y = difference.intValue();
     }
 }
