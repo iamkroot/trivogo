@@ -6,6 +6,8 @@ import com.trivogo.dao.HotelDAO;
 import com.trivogo.models.Hotel;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,6 +56,8 @@ public class HomePageGUI {
     SpinnerNumberModel roomSpinnerNumberModel;
     DefaultTableModel model;
     String location;
+    List<Hotel> hotels;
+    Hotel hotel;
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -99,7 +103,7 @@ public class HomePageGUI {
                 java.time.LocalDate outDate = outDatePicker.getDate();
                 int noOfPeople = (int) peopleSpinner.getValue();
                 int noOfRoom = (int) roomsSpinner.getValue();
-                List<Hotel> hotels = HotelDAO.getHotelsByLocation(location);
+                hotels = HotelDAO.getHotelsByLocation(location);
 
                 for (Hotel hotel : hotels) {
                     model.addRow(new Object[]{hotel.getName(), "4 star"});
@@ -129,6 +133,14 @@ public class HomePageGUI {
 
             }
         });
+        viewRoomsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(hotelTable.getSelectedRow() != -1) {
+                    hotel = hotels.get(hotelTable.getSelectedRow());
+                }
+            }
+        });
     }
 
     public static void main(String args[]) {
@@ -144,6 +156,7 @@ public class HomePageGUI {
                 return false;
             };
         };
+        hotelTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         model = new DefaultTableModel();
         model.addColumn("Hotel Name");
         model.addColumn("Rating");
