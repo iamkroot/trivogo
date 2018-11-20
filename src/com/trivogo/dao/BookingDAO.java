@@ -108,8 +108,8 @@ public class BookingDAO {
                     "AND hotelID = ? AND roomType = ? AND instr(status, 'CONFIRMED')");
             ps.setString(1, DateUtil.convertToDBFormat(checkOutDate));
             ps.setString(2, DateUtil.convertToDBFormat(checkInDate));
-            ps.setInt(4, hotel.getId());
-            ps.setString(5, hotelRoom.getType());
+            ps.setInt(3, hotel.getId());
+            ps.setString(4, hotelRoom.getType());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 numBookedRooms += rs.getInt(1);

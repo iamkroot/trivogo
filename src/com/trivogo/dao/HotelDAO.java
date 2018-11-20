@@ -18,7 +18,7 @@ public class HotelDAO {
                 hotel = new Hotel(id, rs.getString("name"), rs.getString("location"),
                         rs.getInt("numDexRooms"), rs.getInt("numStdRooms"),
                         rs.getString("dexRoomAmenities"), rs.getFloat("dexRoomRate"),
-                        rs.getString("stdRoomAmenities"), rs.getFloat("stdRoomRate"));
+                        rs.getString("stdRoomAmenities"), rs.getFloat("stdRoomRate"), rs.getFloat("rating"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class HotelDAO {
             ps.setString(1, location);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Hotel hotel = new Hotel(rs.getInt("ROWID"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"));
+                Hotel hotel = new Hotel(rs.getInt("ROWID"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"), rs.getFloat("rating"));
                 hotels.add(hotel);
             }
             ps.close();
