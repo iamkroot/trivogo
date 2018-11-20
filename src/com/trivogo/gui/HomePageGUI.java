@@ -101,6 +101,8 @@ public class HomePageGUI {
     private JTextField textField2;
     private JButton confirmModButton;
     private JButton button2;
+    private JLabel selectedHotelLabel;
+    private JLabel payableAmountLabel;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
@@ -118,6 +120,7 @@ public class HomePageGUI {
     String verificationNumber;
     Booking booking;
     SearchParameters params;
+    int payableAmount;
 
     public HomePageGUI(User user) {
         this.user = user;
@@ -215,6 +218,9 @@ public class HomePageGUI {
                 if(hotelTable.getSelectedRow() != -1) {
                     hotel = hotels.get(hotelTable.getSelectedRow());
                 }
+                payableAmount = 0;
+                selectedHotelLabel.setText("Hotel : " + hotel.getName());
+                payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
                 cardPanel.removeAll();
                 cardPanel.add(roomsPanel);
                 cardPanel.repaint();
@@ -322,6 +328,7 @@ public class HomePageGUI {
                 cardPanel.revalidate();
                 panButton.setSelected(false);
                 adhaarButton.setSelected(false);
+                payableAmount = 0;
             }
         });
         reviewsButton.addActionListener(new ActionListener() {
@@ -348,8 +355,20 @@ public class HomePageGUI {
         roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if(hotelTable.getSelectedRow() != -1) {
+                if(roomsTable.getSelectedRow() != -1) {
                     confirmBookingButton.setEnabled(true);
+                    int x;
+                    if(roomsTable.getSelectedRow() == 0){
+                        x = hotel.getStdRoom().getRate();
+                    } else {
+                        x = hotel.getDexRoom().getRate();
+                    }
+                    x *= params.getNumRooms();
+                    Long difference =  (params.getCheckOutDate().getTime()-params.getCheckInDate().getTime())/86400000;
+                    Integer y = difference.intValue();
+                    payableAmount = x*y;
+
+                    payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
                 }
                 else {
                     confirmBookingButton.setEnabled(false);
