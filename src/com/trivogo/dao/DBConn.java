@@ -3,11 +3,12 @@ package com.trivogo.dao;
 import com.trivogo.models.*;
 import com.trivogo.utils.DateUtil;
 import com.trivogo.utils.Hasher;
-
+import java.math.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Random;
 
 class DBConn {
     private static Connection conn = null;
@@ -37,7 +38,8 @@ class DBConn {
     public static void populateDB() {
         conn = getConn();
 //        populateHotels();
-        populateBookings();
+//        populateBookings();
+//        populateReviews();
 //        populateUsers();
     }
 
@@ -118,6 +120,35 @@ class DBConn {
 
     private static void populateBookings() {
         Object[][] bookingData = {
+
+                {2, "vg", "standard", 5, "2018-11-01", "2018-11-10", "CONFIRMED"},
+                {3, "1", "deluxe", 2, "2018-11-03", "2018-11-12", "CONFIRMED"},
+                {1, "vg", "deluxe", 3, "2018-11-02", "2018-11-12", "CONFIRMED"},
+                {4, "dv", "standard", 6, "2018-11-05", "2018-11-11", "CONFIRMED"},
+                {6, "asdf", "standard", 3, "2018-11-01", "2018-11-10", "CONFIRMED"},
+                {5, "1", "deluxe", 7, "2018-11-02", "2018-11-10", "CONFIRMED"},
+                {7, "asdf", "deluxe", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
+                {9, "vg", "standard", 1, "2018-11-08", "2018-11-19", "CONFIRMED"},
+                {8, "asdf", "standard", 1, "2018-11-02", "2018-11-15", "CONFIRMED"},
+                {11, "dv", "deluxe", 2, "2018-11-09", "2018-11-12", "CONFIRMED"},
+                {10, "vg", "deluxe", 5, "2018-11-07", "2018-11-12", "CONFIRMED"},
+                {12, "asdf", "standard", 1, "2018-11-08", "2018-11-14", "CONFIRMED"},
+                {13, "1", "standard", 2, "2018-11-05", "2018-11-17", "CONFIRMED"},
+                {2, "asdf", "deluxe", 1, "2018-11-06", "2018-11-15", "CONFIRMED"},
+                {3, "vg", "standard", 4, "2018-11-03", "2018-11-21", "CONFIRMED"},
+                {1, "asdf", "standard", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
+                {4, "dv", "deluxe", 3, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {6, "vg", "standard", 4, "2018-11-01", "2018-11-17", "CONFIRMED"},
+                {5, "asdf", "deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {7, "asdf", "standard", 3, "2018-11-01", "2018-11-15", "CONFIRMED"},
+                {9, "vg", "standard", 4, "2018-11-05", "2018-11-15", "CONFIRMED"},
+                {8, "asdf", "deluxe", 1, "2018-11-02", "2018-11-17", "CONFIRMED"},
+                {11, "asdf", "standard", 2, "2018-11-07", "2018-11-13", "CONFIRMED"},
+                {10, "vg", "deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {12, "asdf", "deluxe", 1, "2018-11-09", "2018-11-15", "CONFIRMED"},
+                {13, "asdf", "standard", 5, "2018-11-01", "2018-11-12", "CONFIRMED"},
+
+
                 {1, "asdf", "deluxe", 5, "2018-11-19", "2018-11-23", "CONFIRMED"},
                 {4, "dv", "standard", 1,  "2018-12-1", "2018-12-2", "CONFIRMED"},
                 {9, "pp", "standard", 13, "2018-11-23", "2018-11-27", "CONFIRMED"},
@@ -167,14 +198,39 @@ class DBConn {
     }
 
     private static void populateReviews() {
+        Random rand = new Random();
         Object[][] reviewData = {
                 // {bookingID, hotelID, username, description, params}
-                {1, 2, "vg", "Ossum", 7, 2, 9, 5, 6},
+                {1, "Pretty nice", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {2, "Good location", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {3, "Nice service", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {4, "Enjoyed our stay", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {5, "Was a grand success", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {6, "Could be better", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {7, "Sucked", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {8, "Awful", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {9, "Had a great time", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {10, "Service was nice", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {11, "Enjoyed swimming in the pool", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {12, "Saw a celebrity", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {13, "There was rat in the kitchen", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {14, "Bed was stained", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {15, "Bathroom was  dirty when we checked in", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {16, "Tasty food", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {17, "Happy vacation spot", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {18, "Best vacation we've been on", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {19, "Had fun", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {20, "Could be better", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {21, "Wasn't that great", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {22, "Decent", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {23, "Nice", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {24, "Pretty fun", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {25, "Great time", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1},
+                {26, "Lovely", rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1, rand.nextInt(10) + 1}
         };
         for (Object[] data: reviewData) {
-            Hotel hotel = HotelDAO.getHotelByID((Integer) data[1]);
-            User user = UserDAO.getUser((String) data[2]);
-            Review review = new Review(hotel, user, (String) data[3], (int) data[4], (int) data[5], (int) data[6], (int) data[7], (int) data[8]);
+            Booking booking = BookingDAO.getBookingByID((Integer) data[0]);
+            Review review = new Review(booking.getHotel(), booking.getUser(), (String) data[1], (int) data[2], (int) data[3], (int) data[4], (int) data[5], (int) data[6]);
             ReviewDAO.addReview((Integer) data[0], review);
         }
     }

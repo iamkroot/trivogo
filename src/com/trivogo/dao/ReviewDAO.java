@@ -17,7 +17,7 @@ public class ReviewDAO {
     public static int addReview(int bookingID, Review review) {
         int reviewID = 0;
         try {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO reviews VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO reviews (hotelID, user, description, locationParam, roomParam, serviceParam, cleanlinessParam, valueForMoneyParam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, review.getHotel().getId());
             ps.setString(2, review.getUser().getUsername());
             ps.setString(3, review.getReviewDescription());
