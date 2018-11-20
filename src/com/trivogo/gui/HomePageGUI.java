@@ -46,8 +46,8 @@ public class HomePageGUI {
     private JTable hotelTable;
     private DatePicker inDatePicker;
     private DatePicker outDatePicker;
-    private JButton cancelButton;
-    private JButton modifyButton;
+    private JButton roomButton;
+    private JButton reviewButton;
     private JPanel roomsPanel;
     private JTable roomsTable;
     private JButton confirmBookingButton;
@@ -80,10 +80,12 @@ public class HomePageGUI {
     private JLabel idBookingLabel;
     private JLabel statusBookingLabel;
     private JTable bookingsTable;
-    private JButton allBookingsButton;
-    private JButton viewWaitlistButton;
+    private JButton cancelButton;
+    private JButton modifyButton;
     private JPanel cancelPanel;
     private JPanel modifyPanel;
+    private JLabel dueLabel;
+    private JLabel paymentDueLabel;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
@@ -192,7 +194,7 @@ public class HomePageGUI {
 
             }
         });
-        modifyButton.addActionListener(new ActionListener() {
+        reviewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
@@ -302,7 +304,7 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
-        cancelButton.addActionListener(new ActionListener() {
+        roomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
@@ -314,12 +316,12 @@ public class HomePageGUI {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
-                    cancelButton.setEnabled(true);
-                    modifyButton.setEnabled(true);
+                    roomButton.setEnabled(true);
+                    reviewButton.setEnabled(true);
                 }
                 else {
-                    cancelButton.setEnabled(false);
-                    modifyButton.setEnabled(false);
+                    roomButton.setEnabled(false);
+                    reviewButton.setEnabled(false);
                 }
             }
         });
