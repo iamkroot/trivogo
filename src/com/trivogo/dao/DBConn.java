@@ -36,8 +36,8 @@ class DBConn {
 
     public static void populateDB() {
         conn = getConn();
-        populateHotels();
-//        populateBookings();
+//        populateHotels();
+        populateBookings();
 //        populateUsers();
     }
 
@@ -125,10 +125,33 @@ class DBConn {
                 {5, "asdf", "deluxe", 10, "2018-11-28", "2018-12-03", "CONFIRMED"},
                 {13, "pp", "deluxe", 3, "2018-12-12", "2018-12-15", "CONFIRMED"},
                 {3, "1", "deluxe", 2, "2018-12-20", "2019-01-03", "CONFIRMED"},
-                {10, "asdf", "deluxe", 12, "2018-12-15", "2019-01-05", "CONFIRMED"},
+                {10, "asdf", "deluxe", 11, "2018-12-15", "2019-01-05", "CONFIRMED"},
                 {2, "dv", "standard", 56, "2018-12-13", "2018-12-19", "CONFIRMED"},
-                {10, "pp", "standard", 1, "2018-12-23", "2018-12-28", "WAITLIST"},
-                {2, "asdf", "standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"}
+                {10, "pp", "standard", 1, "2018-12-23", "2018-12-28", "WAITLIST PENDING"},
+                {2, "asdf", "standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"},
+                {1, "1", "deluxe", 1, "2018-11-16", "2018-11-19", "CANCELLED"},
+                {4, "asdf", "standard",45, "2018-11-25", "2018-12-15", "CONFIRMED"},
+                {7, "1", "deluxe", 3, "2018-12-22", "2019-01-02", "CANCELLED"},
+                {10, "1", "deluxe", 1, "2018-12-20", "2018-12-22", "CONFIRMED"},
+                {6, "1", "deluxe", 5, "2018-11-25", "2018-11-30", "CONFIRMED"},
+                {7, "dv", "deluxe", 2, "2018-12-23", "2019-01-02", "WAITLIST CONFIRMED"},
+                {2, "1", "standard", 42, "2018-12-10", "2018-12-26", "CONFIRMED"},
+                {9, "asdf", "standard", 14, "2018-12-13", "2018-12-16", "CANCELLED"},
+                {8, "1", "standard", 250, "2018-12-15", "2018-12-27", "CONFIRMED"},
+                {7, "1", "standard", 10, "2018-12-23", "2018-12-27", "CONFIRMED"},
+                {6, "1", "deluxe", 45, "2018-12-11", "2018-12-20", "CONFIRMED"},
+                {11, "1", "standard", 78, "2018-12-02", "2018-12-08", "CONFIRMED"},
+                {12, "dv", "deluxe", 12, "2018-12-06", "2018-12-15", "CONFIRMED"}
+
+                /*These intros should cause waitlist
+                {2, "dv", "standard", 10, "2018-12-15", "2018-12-17", "<waitlist>"},
+                {4, "pp", "deluxe", 7, "2018-12-01", "2018-11-04", "<waitlist>"},
+                {7, "asdf", "deluxe", 3, "2018-12-24", "2018-12-26", "<waitlist>"},
+                {7, "asdf", "standard", 1, "2018-12-24", "2018-12-26", "<waitlist>"},
+                {10, "dv", "deluxe", 2, "2018-12-18", "2018-12-23", "<waitlist>"},
+                {6, "1", "deluxe", 10, "2018-12-15", "2018-12-20", "<waitlist>"},
+                {INTHOTELID, "asdf", "standard", INTNUMROOMS, "INDATE", "OUTDATE", "<waitlit>"}*/
+
         };
         for (int i = 0; i < bookingData.length; i++) {
             Object[] data = bookingData[i];
