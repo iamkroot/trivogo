@@ -4,6 +4,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.dao.HotelDAO;
 import com.trivogo.models.Hotel;
+import com.trivogo.models.HotelRoom;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -50,14 +51,22 @@ public class HomePageGUI {
     private JLabel ratingLabel;
     private JPanel roomsPanel;
     private JTable roomsTable;
+    private JLabel amenitiesLabel;
+    private JLabel roomTypeLabel;
+    private JLabel roomRateLabel;
+    private JButton confirmBookingButton;
+    private JButton backButton;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
     SpinnerNumberModel roomSpinnerNumberModel;
-    DefaultTableModel model;
+    DefaultTableModel hotelModel;
+    DefaultTableModel roomModel;
     String location;
     List<Hotel> hotels;
     Hotel hotel;
+    HotelRoom stdRoom;
+    HotelRoom deluxeRoom;
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -106,7 +115,7 @@ public class HomePageGUI {
                 hotels = HotelDAO.getHotelsByLocation(location);
 
                 for (Hotel hotel : hotels) {
-                    model.addRow(new Object[]{hotel.getName(), "4 star"});
+                    hotelModel.addRow(new Object[]{hotel.getName(), "4 star"});
                 }
                 for(int i=0; i<hotelTable.getRowCount(); i++) {
                     hotelTable.setRowHeight(i, 50);
@@ -127,7 +136,13 @@ public class HomePageGUI {
                 cardPanel.revalidate();
                 if (hotelTable.getRowCount() > 0) {
                     for (int i = hotelTable.getRowCount() - 1; i > -1; i--) {
-                        model.removeRow(i);
+                        hotelModel.removeRow(i);
+                    }
+                }
+
+                if (roomsTable.getRowCount() > 0) {
+                    for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
+                        roomModel.removeRow(i);
                     }
                 }
 
@@ -138,6 +153,17 @@ public class HomePageGUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
                     hotel = hotels.get(hotelTable.getSelectedRow());
+                }
+                cardPanel.removeAll();
+                cardPanel.add(roomsPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+                deluxeRoom = hotel.getDexRoom();
+                stdRoom = hotel.getStdRoom();
+                roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate()});
+                roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate()});
+                for(int i=0; i<roomsTable.getRowCount(); i++) {
+                    roomsTable.setRowHeight(i, 70);
                 }
             }
         });
@@ -157,11 +183,28 @@ public class HomePageGUI {
             };
         };
         hotelTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        model = new DefaultTableModel();
-        model.addColumn("Hotel Name");
-        model.addColumn("Rating");
+        hotelModel = new DefaultTableModel();
+        hotelModel.addColumn("Hotel Name");
+        hotelModel.addColumn("Rating");
 
-        hotelTable.setModel(model);
+        hotelTable.setModel(hotelModel);
+
+        roomsTable = new JTable() {
+            private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+
+        roomsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        roomModel = new DefaultTableModel();
+        roomModel.addColumn("Room Type");
+        roomModel.addColumn("Amenities");
+        roomModel.addColumn("Rate");
+
+        roomsTable.setModel(roomModel);
+
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
 
