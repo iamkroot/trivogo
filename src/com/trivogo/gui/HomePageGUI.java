@@ -5,6 +5,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.dao.BookingDAO;
 import com.trivogo.dao.HotelDAO;
 import com.trivogo.models.*;
+import com.trivogo.utils.Regex;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -181,7 +182,7 @@ public class HomePageGUI {
                     hotelTable.setRowHeight(i, 50);
                 }
 
-               switchToPanel(homePanel);
+               switchToPanel(hotelPanel);
             }
         });
         searchHotelButton.addActionListener(new ActionListener() {
@@ -264,6 +265,7 @@ public class HomePageGUI {
                             booking.setStatus("CONFIRMED");
                         }
                         booking.setBookingID(BookingDAO.addBooking(booking));
+                        booking.setPayableAmount(payableAmount);
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         switchToPanel(summaryPanel);
                     }
@@ -277,6 +279,7 @@ public class HomePageGUI {
                         if(booking.getStatus().equals("PENDING"))
                             booking.setStatus("CONFIRMED");
                         booking.setBookingID(BookingDAO.addBooking(booking));
+                        booking.setPayableAmount(payableAmount);
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         switchToPanel(summaryPanel);
                     }
@@ -341,11 +344,23 @@ public class HomePageGUI {
                     }
                     x *= params.getNumRooms();
                     payableAmount = x*diffInDate(params.getCheckInDate(), params.getCheckOutDate());
-
                     payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
                 }
                 else {
                     confirmBookingButton.setEnabled(false);
+                }
+            }
+        });
+        bookingsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if(bookingsTable.getSelectedRow() != -1) {
+                    modifyButton.setEnabled(true);
+                    cancelButton.setEnabled(true);
+                }
+                else {
+                    modifyButton.setEnabled(false);
+                    cancelButton.setEnabled(false);
                 }
             }
         });
@@ -409,10 +424,10 @@ public class HomePageGUI {
                 if(bookingsTable.getSelectedRow() != -1) {
                     booking = bookings.get(bookingsTable.getSelectedRow());
                 }
-                int y =  diffInDate(params.getCheckInDate(), params.getCheckOutDate())
+                int y =  diffInDate(booking.getCheckInDate(), booking.getCheckOutDate());
                 java.util.Date today = new Date();
-                int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y*(-1);
-                if( y == -1 || y == -2 ) {
+                int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y;
+                if( y == 1 || y == 2 ) {
                     cardNumLabel.setVisible(true);
                     cardNumField.setVisible(true);
                     dateExpLabel.setVisible(true);
@@ -438,9 +453,11 @@ public class HomePageGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(booking.getPayableAmount() != 0) {
-                    JOptionPane.showMessageDialog(null,"Payment Successful. Booking cancelled.");
-                    booking.setStatus("CANCELLED");
-                    // TODO: 21/11/18 load data into table again 
+                    if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
+                        JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
+                        booking.setStatus("CANCELLED");
+                        // TODO: 21/11/18 load data into table again
+                    }
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
@@ -542,5 +559,6 @@ public class HomePageGUI {
     private int diffInDate(Date d1, Date d2){
         Long difference =  (d1.getTime()-d2.getTime())/86400000;
         Integer y = difference.intValue();
+        return -y;
     }
 }
