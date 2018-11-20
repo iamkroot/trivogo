@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.List;
 
@@ -48,13 +49,8 @@ public class HomePageGUI {
     private DatePicker outDatePicker;
     private JButton viewReviewButton;
     private JButton viewRoomsButton;
-    private JLabel hotelNameLabel;
-    private JLabel ratingLabel;
     private JPanel roomsPanel;
     private JTable roomsTable;
-    private JLabel amenitiesLabel;
-    private JLabel roomTypeLabel;
-    private JLabel roomRateLabel;
     private JButton confirmBookingButton;
     private JButton backButton;
     private JPanel verificationPanel;
@@ -76,6 +72,17 @@ public class HomePageGUI {
     private JLabel outDateLabel;
     private JLabel bookingIDLabel;
     private JLabel bookingStatusLabel;
+    private JButton prevBookingButton;
+    private JLabel nameHotelLabel;
+    private JLabel typeRoomLabel;
+    private JLabel numRoomsLabel;
+    private JLabel dateInLabel;
+    private JLabel dateOutLabel;
+    private JLabel idBookingLabel;
+    private JLabel statusBookingLabel;
+    private JTable bookingsTable;
+    private JButton allBookingsButton;
+    private JButton viewWaitlistButton;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
@@ -83,8 +90,10 @@ public class HomePageGUI {
     SpinnerNumberModel roomSpinnerNumberModel;
     DefaultTableModel hotelModel;
     DefaultTableModel roomModel;
+    DefaultTableModel bookingModel;
     String location;
     List<Hotel> hotels;
+    List<Booking> bookings;
     Hotel hotel;
     HotelRoom stdRoom;
     HotelRoom deluxeRoom;
@@ -104,10 +113,27 @@ public class HomePageGUI {
         previousBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (bookingsTable.getRowCount() > 0) {
+                    for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                        bookingModel.removeRow(i);
+                    }
+                }
                 cardPanel.removeAll();
                 cardPanel.add(previousBookingsPanel);
                 cardPanel.repaint();
                 cardPanel.revalidate();
+                bookings = BookingDAO.getUserBookings(user);
+
+                for (Booking booking : bookings) {
+                    bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                            booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                            String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
+                }
+                for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                    bookingsTable.setRowHeight(i, 30);
+                }
+
+
             }
         });
 
@@ -235,9 +261,10 @@ public class HomePageGUI {
                 if(adhaarButton.isSelected()) {
                     verificationNumber = adhaarField.getText();
                     if(verificationNumber.length() == 12) {
-                        if(booking.getStatus().equals("PENDING"))
+                        if(booking.getStatus().equals("PENDING")) {
                             booking.setStatus("CONFIRMED");
-                        BookingDAO.addBooking(booking);
+                        }
+                        booking.setBookingID(BookingDAO.addBooking(booking));
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         cardPanel.removeAll();
                         cardPanel.add(summaryPanel);
@@ -253,7 +280,7 @@ public class HomePageGUI {
                     if(verificationNumber.length() == 10) {
                         if(booking.getStatus().equals("PENDING"))
                             booking.setStatus("CONFIRMED");
-                        BookingDAO.addBooking(booking);
+                        booking.setBookingID(BookingDAO.addBooking(booking));
                         JOptionPane.showMessageDialog(null,"Verification Successfull");
                         cardPanel.removeAll();
                         cardPanel.add(summaryPanel);
@@ -264,6 +291,13 @@ public class HomePageGUI {
                         JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
                     }
                 }
+                nameHotelLabel.setText(booking.getHotel().getName());
+                typeRoomLabel.setText(booking.getRoom().getType());
+                numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
+                dateInLabel.setText(booking.getCheckInDate().toString());
+                dateOutLabel.setText(booking.getCheckOutDate().toString());
+                idBookingLabel.setText(String.valueOf(booking.getBookingID()));
+                statusBookingLabel.setText(booking.getStatus());
 
             }
         });
@@ -342,6 +376,32 @@ public class HomePageGUI {
                 }
             }
         });
+        prevBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (bookingsTable.getRowCount() > 0) {
+                    for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                        bookingModel.removeRow(i);
+                    }
+                }
+
+                bookings = BookingDAO.getUserBookings(user);
+
+                for (Booking booking : bookings) {
+                    bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                            booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                            String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
+                }
+                for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                    bookingsTable.setRowHeight(i, 30);
+                }
+                cardPanel.removeAll();
+                cardPanel.add(previousBookingsPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+
+            }
+        });
     }
 
     private void createUIComponents() {
@@ -375,6 +435,27 @@ public class HomePageGUI {
         roomModel.addColumn("Rate");
 
         roomsTable.setModel(roomModel);
+
+        bookingsTable = new JTable() {
+            private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+
+        bookingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        bookingModel = new DefaultTableModel();
+        bookingModel.addColumn("Booking Id");
+        bookingModel.addColumn("Hotel Name");
+        bookingModel.addColumn("Check-in date");
+        bookingModel.addColumn("Check-out date");
+        bookingModel.addColumn("Room Type");
+        bookingModel.addColumn("Number of Rooms");
+        bookingModel.addColumn("Status");
+
+
+        bookingsTable.setModel(bookingModel);
 
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
