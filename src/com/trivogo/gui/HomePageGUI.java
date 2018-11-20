@@ -99,6 +99,8 @@ public class HomePageGUI {
     private JTextField textField1;
     private JLabel newOutDateLabel;
     private JTextField textField2;
+    private JButton confirmModButton;
+    private JButton button2;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
@@ -431,7 +433,9 @@ public class HomePageGUI {
                     }
 
                 java.util.Date today = new Date();
-                if((String.valueOf(today.toString()) - String.valueOf(booking.getCheckInDate().toString())) == 1 ) {
+                    Long difference = (booking.getCheckInDate().getTime()-booking.getCheckOutDate().getTime())/86400000;
+                    Integer y = difference.intValue();
+                if( y == -1 || y == -2 ) {
                     cardNumLabel.setVisible(true);
                     cardNumField.setVisible(true);
                     dateExpLabel.setVisible(true);
@@ -439,6 +443,7 @@ public class HomePageGUI {
                     cvvField.setVisible(true);
                     cvvLabel.setVisible(true);
                     confirmButton.setText("Confirm and Pay");
+                    //JOptionPane.showMessageDialog(null, y.toString());
                 }
                 else {
                     cardNumLabel.setVisible(false);

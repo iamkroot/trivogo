@@ -10,6 +10,7 @@ public class Booking {
     private int bookingID;
     private String status;
     private Review review;
+    private int payableAmount;
 
     public Booking(Hotel hotel, User user, HotelRoom room, SearchParameters params, String status) {
         this(hotel, user, room, params.getNumRooms(), params.getCheckInDate(), params.getCheckOutDate(), status);
@@ -23,6 +24,7 @@ public class Booking {
         setCheckInDate(inDate);
         setCheckOutDate(outDate);
         setStatus(stat);
+        payableAmount = 0;
     }
     
     public void setHotel(Hotel hotel){
@@ -51,6 +53,10 @@ public class Booking {
     }
     public void setReview(Review review) {
         this.review = review;
+    }
+
+    public void setPayableAmount(int payableAmount) {
+        this.payableAmount = payableAmount;
     }
 
     public Hotel getHotel() {
@@ -83,6 +89,10 @@ public class Booking {
     
     public int getBookingID() {
         return this.bookingID;
+    }
+
+    public int getPayableAmount() {
+        return this.payableAmount;
     }
 
     public Review getReview() {
