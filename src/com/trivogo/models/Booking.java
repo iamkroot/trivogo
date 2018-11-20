@@ -1,5 +1,4 @@
 package com.trivogo.models;
-import java.text.*;
 
 public class Booking {
     private Hotel hotel;
@@ -10,6 +9,7 @@ public class Booking {
     private int numOfRooms;
     private int bookingID;
     private String status;
+    private Review review;
 
     public Booking(Hotel hotel, User user, HotelRoom room, SearchParameters params, String status) {
         this(hotel, user, room, params.getNumRooms(), params.getCheckInDate(), params.getCheckOutDate(), status);
@@ -49,7 +49,10 @@ public class Booking {
     public void setBookingID(int bID) {
         this.bookingID = bID;
     }
-    
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
     public Hotel getHotel() {
         return this.hotel;
     }
@@ -80,5 +83,9 @@ public class Booking {
     
     public int getBookingID() {
         return this.bookingID;
+    }
+
+    public Review getReview() {
+        return review;
     }
 }

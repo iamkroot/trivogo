@@ -1,14 +1,15 @@
 package com.trivogo.models;
 
 public class Review {
-    Hotel hotel;
-    String username, reviewDescription;
-    int paramLocation, paramRoom, paramService, paramClean, paramValueForMoney; //they will be on a scale of 1-10
-    double paramOverall;
+    private Hotel hotel;
+    private User user;
+    private String reviewDescription;
+    private int id, paramLocation, paramRoom, paramService, paramClean, paramValueForMoney; //they will be on a scale of 1-10
+    private float paramOverall;
 
-    public Review(Hotel hotel, String username, String reviewDescription, int paramLocation, int paramRoom, int paramService, int paramClean, int paramValueForMoney) {
+    public Review(Hotel hotel, User user, String reviewDescription, int paramLocation, int paramRoom, int paramService, int paramClean, int paramValueForMoney) {
         setHotel(hotel);
-        setUsername(username);
+        setUser(user);
         setReviewDescription(reviewDescription);
         setParamLocation(paramLocation);
         setParamRoom(paramRoom);
@@ -16,6 +17,13 @@ public class Review {
         setParamClean(paramClean);
         setParamValueForMoney(paramValueForMoney);
         setParamOverall();
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Hotel getHotel() {
@@ -26,12 +34,12 @@ public class Review {
         this.hotel = hotel;
     }
 
-    public String getUsername() {
-        return username;
+    public User getUser() {
+        return user;
     }
 
-    private void setUsername(String username) {
-        this.username = username;
+    private void setUser(User user) {
+        this.user = user;
     }
 
     public String getReviewDescription() {
@@ -87,6 +95,6 @@ public class Review {
     }
 
     public void setParamOverall() {
-        this.paramOverall = (double)(paramLocation+paramClean+paramRoom+paramService+paramValueForMoney)/5;
+        this.paramOverall = (float) (paramLocation+paramClean+paramRoom+paramService+paramValueForMoney)/5;
     }
 }

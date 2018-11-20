@@ -23,7 +23,7 @@ public class BookingDAO {
             ps.setString(7, booking.getStatus());
             ps.executeUpdate();
             ps.close();
-            ps = conn.prepareStatement("SELECT ROWID FROM bookings ORDER BY ROWID DESC LIMIT 1;");
+            ps = conn.prepareStatement("SELECT id FROM bookings ORDER BY id DESC LIMIT 1;");
             ResultSet rs = ps.executeQuery();
             if (rs.next()){
                 return rs.getInt(1);
@@ -38,12 +38,23 @@ public class BookingDAO {
 
     public static void updateBooking(int bookingID, Date checkInDate, Date checkOutDate) {
         try {
-            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET checkInDate = ?, checkOutDate = ? WHERE ROWID = ?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET checkInDate = ?, checkOutDate = ? WHERE id = ?");
             ps.setString(1, DateUtil.convertToDBFormat(checkInDate));
             ps.setString(2, DateUtil.convertToDBFormat(checkOutDate));
             ps.setInt(3, bookingID);
             ps.executeUpdate();
             ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addReview(int bookingID, Review review) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET reviewID = ? WHERE id = ?");
+            ps.setInt(1, review.getId());
+            ps.setInt(2, bookingID);
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,6 +74,7 @@ public class BookingDAO {
                     DateUtil.readFromDB(rs.getString("checkInDate")),
                     DateUtil.readFromDB(rs.getString("checkOutDate")), rs.getString("status"));
             booking.setBookingID(rs.getInt("id"));
+            booking.setReview(ReviewDAO.getReviewByID(rs.getInt("reviewID")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -127,7 +139,7 @@ public class BookingDAO {
     }
     public static void main(String args[]) {
         Hotel hotel = HotelDAO.getHotelByID(2);
-        int a = getNumAvailableRooms(DateUtil.readFromDB("2018-12-12"), DateUtil.readFromDB("2018-12-14"), hotel, hotel.getStdRoom());
-        System.out.println(a);
+        getHotelBookings(hotel);
+//        System.out.println(a);
     }
 }

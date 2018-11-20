@@ -11,11 +11,11 @@ public class HotelDAO {
     public static Hotel getHotelByID(int id) {
         Hotel hotel = null;
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where ROWID = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                hotel = new Hotel(id, rs.getString("name"), rs.getString("location"),
+                hotel = new Hotel(rs.getInt("id"), rs.getString("name"), rs.getString("location"),
                         rs.getInt("numDexRooms"), rs.getInt("numStdRooms"),
                         rs.getString("dexRoomAmenities"), rs.getFloat("dexRoomRate"),
                         rs.getString("stdRoomAmenities"), rs.getFloat("stdRoomRate"), rs.getFloat("rating"));
@@ -44,11 +44,11 @@ public class HotelDAO {
     public static List<Hotel> getHotelsByLocation(String location) {
         List<Hotel> hotels = new ArrayList<>();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM hotelsq WHERE location = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM hotels WHERE location = ?");
             ps.setString(1, location);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Hotel hotel = new Hotel(rs.getInt("ROWID"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"), rs.getFloat("rating"));
+                Hotel hotel = new Hotel(rs.getInt("id"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"), rs.getFloat("rating"));
                 hotels.add(hotel);
             }
             ps.close();
