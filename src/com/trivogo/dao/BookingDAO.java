@@ -81,6 +81,21 @@ public class BookingDAO {
         return booking;
     }
 
+    public static Booking getBookingByID(int id) {
+        Booking booking = null;
+        try {
+            PreparedStatement getBookings = conn.prepareStatement("SELECT * FROM bookings WHERE id = ?");
+            getBookings.setInt(1, id);
+            ResultSet rs = getBookings.executeQuery();
+            while (rs.next()) {
+                booking = fromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return booking;
+    }
+
     public static List<Booking> getHotelBookings(Hotel hotel) {
         List<Booking> bookings = new ArrayList<>();
         try {
