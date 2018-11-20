@@ -277,6 +277,27 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
+        viewReviewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(hotelTable.getSelectedRow() != -1) {
+                    hotel = hotels.get(hotelTable.getSelectedRow());
+                }
+            }
+        });
+        hotelTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if(hotelTable.getSelectedRow() != -1) {
+                    viewReviewButton.setEnabled(true);
+                    viewRoomsButton.setEnabled(true);
+                }
+                else {
+                    viewReviewButton.setEnabled(false);
+                    viewRoomsButton.setEnabled(false);
+                }
+            }
+        });
     }
 
     public static void main(String args[]) {
