@@ -7,8 +7,8 @@ import java.util.List;
 import com.trivogo.models.Hotel;
 
 public class HotelDAO {
+    private static Connection conn = DBConn.getConn();
     public static Hotel getHotelByID(int id) {
-        Connection conn = DBConn.getConn();
         Hotel hotel = null;
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where id = ?");
@@ -27,7 +27,6 @@ public class HotelDAO {
     }
 
     public static List<String> getAllLocations() {
-        Connection conn = DBConn.getConn();
         List<String> locations = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT location FROM hotels");
@@ -43,7 +42,6 @@ public class HotelDAO {
     }
 
     public static List<Hotel> getHotelsByLocation(String location) {
-        Connection conn = DBConn.getConn();
         List<Hotel> hotels = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM hotels WHERE location = ?");

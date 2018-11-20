@@ -1,15 +1,14 @@
 package com.trivogo.dao;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.trivogo.models.User;
 import com.trivogo.utils.DateUtil;
 
 public class UserDAO {
+    private static Connection conn = DBConn.getConn();
     public static int addUser(User user) {
-        Connection conn = DBConn.getConn();
         try {
             String stmt = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(stmt);
@@ -29,7 +28,6 @@ public class UserDAO {
     }
 
     public static boolean checkUserExists(String username) {
-        Connection conn = DBConn.getConn();
         String queryCheck = "SELECT count(*) from users WHERE username = ?";
         try {
             PreparedStatement ps1 = conn.prepareStatement(queryCheck);
@@ -46,7 +44,6 @@ public class UserDAO {
     }
 
     public static User getUser(String username) {
-        Connection conn = DBConn.getConn();
         User user = null;
         try {
             String stmt = "SELECT * FROM users WHERE username=?";

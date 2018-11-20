@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class BookingDAO {
+    private static Connection conn = DBConn.getConn();
     public static int addBooking(Booking booking) {
-        Connection conn = DBConn.getConn();
         try {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (hotelID, user, roomType, numRooms, checkInDate, checkOutDate, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (hotelID, user, roomType, numRooms, checkInDate, checkOutDate, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, booking.getHotel().getId());
             ps.setString(2, booking.getUser().getUsername());
             ps.setString(3, booking.getRoom().getType());
@@ -21,13 +21,12 @@ public class BookingDAO {
             ps.setString(5, DateUtil.convertToDBFormat(booking.getCheckInDate()));
             ps.setString(6, DateUtil.convertToDBFormat(booking.getCheckOutDate()));
             ps.setString(7, booking.getStatus());
-            ps.setString(8, booking.getHotel().getLocation());
             ps.executeUpdate();
             ps.close();
-            ps = conn.prepareStatement("SELECT * FROM bookings ORDER BY id DESC LIMIT 1;");
+            ps = conn.prepareStatement("SELECT ROWID FROM bookings ORDER BY ROWID DESC LIMIT 1;");
             ResultSet rs = ps.executeQuery();
             if (rs.next()){
-                return rs.getInt("id");
+                return rs.getInt(1);
             }
             ps.close();
         } catch (SQLException e) {
@@ -35,6 +34,19 @@ public class BookingDAO {
             return -2;
         }
         return 0;
+    }
+
+    public static void updateBooking(int bookingID, Date checkInDate, Date checkOutDate) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET checkInDate = ?, checkOutDate = ? WHERE ROWID = ?");
+            ps.setString(1, DateUtil.convertToDBFormat(checkInDate));
+            ps.setString(2, DateUtil.convertToDBFormat(checkOutDate));
+            ps.setInt(3, bookingID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static Booking fromResultSet(ResultSet rs) {
@@ -59,7 +71,6 @@ public class BookingDAO {
 
     public static List<Booking> getHotelBookings(Hotel hotel) {
         List<Booking> bookings = new ArrayList<>();
-        Connection conn = DBConn.getConn();
         try {
             PreparedStatement getBookings = conn.prepareStatement("SELECT * FROM bookings WHERE hotelID = ?");
             getBookings.setInt(1, hotel.getId());
@@ -75,7 +86,6 @@ public class BookingDAO {
 
     public static List<Booking> getUserBookings(User user) {
         List<Booking> bookings = new ArrayList<>();
-        Connection conn = DBConn.getConn();
         try {
             PreparedStatement getBookings = conn.prepareStatement("SELECT * FROM bookings WHERE user = ?");
             getBookings.setString(1, user.getUsername());
@@ -92,14 +102,12 @@ public class BookingDAO {
         return getNumAvailableRooms(booking.getCheckInDate(), booking.getCheckOutDate(), booking.getHotel(), booking.getRoom());
     }
     public static int getNumAvailableRooms(Date checkInDate, Date checkOutDate, Hotel hotel, HotelRoom hotelRoom) {
-        Connection conn = DBConn.getConn();
         int numBookedRooms = 0;
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT numRooms FROM bookings WHERE checkInDate < ? AND checkOutDate > ?" +
-                    "AND location = ? AND hotelID = ? AND roomType = ? AND (status = 'CONFIRMED' OR status = 'CONFIRMED')");
+                    "AND hotelID = ? AND roomType = ? AND instr(status, 'CONFIRMED')");
             ps.setString(1, DateUtil.convertToDBFormat(checkOutDate));
             ps.setString(2, DateUtil.convertToDBFormat(checkInDate));
-            ps.setString(3, hotel.getLocation());
             ps.setInt(4, hotel.getId());
             ps.setString(5, hotelRoom.getType());
             ResultSet rs = ps.executeQuery();
@@ -117,5 +125,9 @@ public class BookingDAO {
             totalRooms = hotel.getTotalStandardRooms();
         return totalRooms - numBookedRooms;
     }
-
+    public static void main(String args[]) {
+        Hotel hotel = HotelDAO.getHotelByID(2);
+        int a = getNumAvailableRooms(DateUtil.readFromDB("2018-12-12"), DateUtil.readFromDB("2018-12-14"), hotel, hotel.getStdRoom());
+        System.out.println(a);
+    }
 }
