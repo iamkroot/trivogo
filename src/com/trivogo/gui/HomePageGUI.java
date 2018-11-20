@@ -392,15 +392,6 @@ public class HomePageGUI {
 
             }
         });
-        viewWaitlistButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TableRowSorter<bookingModel> sorter = new TableRowSorter<bookingModel>(((DefaultTableModel) bookingsTable.getModel()));
-                sorter.setRowFilter(RowFilter.regexFilter(jTextField1.getText()));
-
-                bookingsTable.setRowSorter(sorter);
-            }
-        });
     }
 
     private void createUIComponents() {
