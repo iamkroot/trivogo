@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.List;
 
@@ -47,8 +46,8 @@ public class HomePageGUI {
     private JTable hotelTable;
     private DatePicker inDatePicker;
     private DatePicker outDatePicker;
-    private JButton viewReviewButton;
-    private JButton viewRoomsButton;
+    private JButton cancelButton;
+    private JButton modifyButton;
     private JPanel roomsPanel;
     private JTable roomsTable;
     private JButton confirmBookingButton;
@@ -137,15 +136,6 @@ public class HomePageGUI {
             }
         });
 
-        waitlistButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardPanel.removeAll();
-                cardPanel.add(waitlistPanel);
-                cardPanel.repaint();
-                cardPanel.revalidate();
-            }
-        });
         inDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -200,7 +190,7 @@ public class HomePageGUI {
 
             }
         });
-        viewRoomsButton.addActionListener(new ActionListener() {
+        modifyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
@@ -310,7 +300,7 @@ public class HomePageGUI {
                 cardPanel.revalidate();
             }
         });
-        viewReviewButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
@@ -322,12 +312,12 @@ public class HomePageGUI {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if(hotelTable.getSelectedRow() != -1) {
-                    viewReviewButton.setEnabled(true);
-                    viewRoomsButton.setEnabled(true);
+                    cancelButton.setEnabled(true);
+                    modifyButton.setEnabled(true);
                 }
                 else {
-                    viewReviewButton.setEnabled(false);
-                    viewRoomsButton.setEnabled(false);
+                    cancelButton.setEnabled(false);
+                    modifyButton.setEnabled(false);
                 }
             }
         });
@@ -400,6 +390,15 @@ public class HomePageGUI {
                 cardPanel.repaint();
                 cardPanel.revalidate();
 
+            }
+        });
+        viewWaitlistButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TableRowSorter<bookingModel> sorter = new TableRowSorter<bookingModel>(((DefaultTableModel) bookingsTable.getModel()));
+                sorter.setRowFilter(RowFilter.regexFilter(jTextField1.getText()));
+
+                bookingsTable.setRowSorter(sorter);
             }
         });
     }

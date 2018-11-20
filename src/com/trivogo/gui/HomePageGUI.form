@@ -200,6 +200,7 @@
                 </constraints>
                 <properties>
                   <background color="-921103"/>
+                  <foreground color="-921103"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -213,19 +214,6 @@
               </scrollpane>
             </children>
           </grid>
-          <grid id="a8b67" binding="waitlistPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <card name="Card4"/>
-            </constraints>
-            <properties>
-              <background color="-921103"/>
-              <minimumSize width="400" height="400"/>
-              <preferredSize width="400" height="400"/>
-            </properties>
-            <border type="none"/>
-            <children/>
-          </grid>
           <grid id="8d664" binding="hotelPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
@@ -237,22 +225,22 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="1101" class="javax.swing.JButton" binding="viewRoomsButton">
+              <component id="1101" class="javax.swing.JButton" binding="modifyButton">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <enabled value="false"/>
-                  <text value="View Rooms"/>
+                  <text value="Modify Booking"/>
                 </properties>
               </component>
-              <component id="aadc0" class="javax.swing.JButton" binding="viewReviewButton">
+              <component id="aadc0" class="javax.swing.JButton" binding="cancelButton">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <enabled value="false"/>
-                  <text value="View Reviews"/>
+                  <text value="Cancel Booking"/>
                 </properties>
               </component>
               <scrollpane id="7bf38">
@@ -261,6 +249,7 @@
                 </constraints>
                 <properties>
                   <background color="-921103"/>
+                  <foreground color="-921103"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -308,6 +297,7 @@
                 </constraints>
                 <properties>
                   <background color="-921103"/>
+                  <foreground color="-921103"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -695,15 +685,6 @@
               <text value="Previous Bookings"/>
             </properties>
           </component>
-          <component id="d9766" class="javax.swing.JButton" binding="waitlistButton">
-            <constraints/>
-            <properties>
-              <text value="Waitlist"/>
-            </properties>
-          </component>
-          <vspacer id="3b7b8">
-            <constraints/>
-          </vspacer>
         </children>
       </toolbar>
       <vspacer id="99a1b">
