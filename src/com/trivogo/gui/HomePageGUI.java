@@ -56,6 +56,26 @@ public class HomePageGUI {
     private JLabel roomRateLabel;
     private JButton confirmBookingButton;
     private JButton backButton;
+    private JPanel verificationPanel;
+    private JLabel verificationLabel;
+    private JRadioButton adhaarButton;
+    private JRadioButton panButton;
+    private JLabel adhaarLabel;
+    private JLabel panLabel;
+    private JTextField adhaarField;
+    private JTextField panField;
+    private JButton verifyButton;
+    private JButton backRoomButton;
+    private JPanel summaryPanel;
+    private JLabel summaryLabel;
+    private JLabel hotelLabel;
+    private JLabel roomLabel;
+    private JLabel noRoomLabel;
+    private JLabel inDateLabel;
+    private JLabel outDateLabel;
+    private JLabel bookingIDLabel;
+    private JLabel bookingStatusLabel;
+    //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
@@ -67,6 +87,8 @@ public class HomePageGUI {
     Hotel hotel;
     HotelRoom stdRoom;
     HotelRoom deluxeRoom;
+    String verificationNumber;
+
 
     public HomePageGUI() {
         frame1 = new JFrame();
@@ -165,6 +187,94 @@ public class HomePageGUI {
                 for(int i=0; i<roomsTable.getRowCount(); i++) {
                     roomsTable.setRowHeight(i, 70);
                 }
+            }
+        });
+        adhaarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                adhaarLabel.setVisible(true);
+                adhaarField.setVisible(true);
+                panButton.setSelected(false);
+                panField.setVisible(false);
+                panLabel.setVisible(false);
+            }
+        });
+        panButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panField.setVisible(true);
+                panLabel.setVisible(true);
+                adhaarButton.setSelected(false);
+                adhaarLabel.setVisible(false);
+                adhaarField.setVisible(false);
+            }
+        });
+        confirmBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(verificationPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+                panLabel.setVisible(false);
+                panField.setVisible(false);
+                adhaarField.setVisible(false);
+                adhaarLabel.setVisible(false);
+            }
+        });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(hotelPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
+                if (roomsTable.getRowCount() > 0) {
+                    for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
+                        roomModel.removeRow(i);
+                    }
+                }
+            }
+        });
+        verifyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(adhaarButton.isSelected()) {
+                    verificationNumber = adhaarField.getText();
+                    if(verificationNumber.length() == 12) {
+                        JOptionPane.showMessageDialog(null,"Verification Successfull");
+                        cardPanel.removeAll();
+                        cardPanel.add(summaryPanel);
+                        cardPanel.repaint();
+                        cardPanel.revalidate();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,"Invalid Adhaar Card Number");
+                    }
+                }
+                else if(panButton.isSelected()) {
+                    verificationNumber = panField.getText();
+                    if(verificationNumber.length() == 10) {
+                        JOptionPane.showMessageDialog(null,"Verification Successfull");
+                        cardPanel.removeAll();
+                        cardPanel.add(summaryPanel);
+                        cardPanel.repaint();
+                        cardPanel.revalidate();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
+                    }
+                }
+
+            }
+        });
+        backRoomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardPanel.removeAll();
+                cardPanel.add(roomsPanel);
+                cardPanel.repaint();
+                cardPanel.revalidate();
             }
         });
     }
