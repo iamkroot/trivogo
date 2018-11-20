@@ -82,6 +82,8 @@ public class HomePageGUI {
     private JTable bookingsTable;
     private JButton allBookingsButton;
     private JButton viewWaitlistButton;
+    private JPanel cancelPanel;
+    private JPanel modifyPanel;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
