@@ -11,7 +11,7 @@ public class HotelDAO {
     public static Hotel getHotelByID(int id) {
         Hotel hotel = null;
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where id = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * from hotels where ROWID = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -44,11 +44,11 @@ public class HotelDAO {
     public static List<Hotel> getHotelsByLocation(String location) {
         List<Hotel> hotels = new ArrayList<>();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM hotels WHERE location = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM hotelsq WHERE location = ?");
             ps.setString(1, location);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Hotel hotel = new Hotel(rs.getInt("id"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"));
+                Hotel hotel = new Hotel(rs.getInt("ROWID"), rs.getString("name"), rs.getString("location"), rs.getInt("numDexRooms"), rs.getInt("numStdRooms"), rs.getString("dexRoomAmenities"), rs.getInt("dexRoomRate"), rs.getString("stdRoomAmenities"), rs.getInt("stdRoomRate"));
                 hotels.add(hotel);
             }
             ps.close();

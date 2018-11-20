@@ -36,8 +36,8 @@ class DBConn {
 
     public static void populateDB() {
         conn = getConn();
-//        populateHotels();
-        populateBookings();
+        populateHotels();
+//        populateBookings();
 //        populateUsers();
     }
 
