@@ -139,7 +139,7 @@ class DBConn {
             else
                 hr = hotel.getStdRoom();
             Booking booking = new Booking(hotel, UserDAO.getUser((String) data[1]), hr, (Integer) data[3], DateUtil.readFromDB((String) data[4]), DateUtil.readFromDB((String) data[5]), (String) data[6]);
-            BookingDAO.newBooking(booking);
+            BookingDAO.addBooking(booking);
         }
     }
     static void closeConn() {

@@ -5,11 +5,23 @@ import com.trivogo.utils.DateUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class BookingDAO {
-    public static int newBooking(Booking booking) {
+    public static Booking newBooking(User user, SearchParameters parameters, Hotel hotel, HotelRoom hotelRoom) {
+        Booking booking = new Booking(hotel, user, hotelRoom, parameters,"PENDING");
+        if (getNumAvailableRooms(parameters) < parameters.getNumRooms()) {
+            booking.setStatus("WAITLIST");  // don't store in db yet, ask user to enroll in waiting list
+            booking.setBookingID(-1);
+        } else {
+            booking.setStatus("CONFIRMED");
+            booking.setBookingID(addBooking(booking));
+        }
+        return booking;
+    }
+    public static int addBooking(Booking booking) {
         Connection conn = DBConn.getConn();
         try {
             PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (hotelID, user, roomType, numRooms, checkInDate, checkOutDate, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -87,18 +99,18 @@ public class BookingDAO {
         }
         return bookings;
     }
-
-    public static int getNumAvailableRooms(SearchParameters params) {
-        String checkInDate = DateUtil.convertToDBFormat(params.getCheckInDate());
-        String checkOutDate = DateUtil.convertToDBFormat(params.getCheckOutDate());
+    public static int getNumAvailableRooms(SearchParameters parameters) {
+        return getNumAvailableRooms(parameters.getCheckInDate(), parameters.getCheckOutDate(), parameters.getLocation());
+    }
+    public static int getNumAvailableRooms(Date checkInDate, Date checkOutDate, Location location) {
         Connection conn = DBConn.getConn();
         int numBookedRooms = 0;
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT numRooms FROM bookings WHERE checkInDate < ? AND checkOutDate > ?" +
                     "AND location = ? AND status = 'CONFIRMED'");
-            ps.setString(1, checkOutDate);
-            ps.setString(2, checkInDate);
-            ps.setString(3, params.getLocation().getLocationName());
+            ps.setString(1, DateUtil.convertToDBFormat(checkOutDate));
+            ps.setString(2, DateUtil.convertToDBFormat(checkInDate));
+            ps.setString(3, location.getLocationName());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 numBookedRooms += rs.getInt(1);
@@ -106,7 +118,6 @@ public class BookingDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Location location = params.getLocation();
         int totalRooms = location.getNumDeluxeRooms() + location.getNumStandardRooms();
         return totalRooms - numBookedRooms;
     }
