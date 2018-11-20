@@ -378,7 +378,7 @@ public class HomePageGUI {
         confirmBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                booking = new Booking(hotel, user, hotel.getRoomInfo("deluxe"), params, "PENDING" );
+                booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("standard") : hotel.getRoomInfo("deluxe"), params, "PENDING" );
                 if (params.getNumRooms() <= com.trivogo.dao.BookingDAO.getNumAvailableRooms(booking)) {
                     cardPanel.removeAll();
                     cardPanel.add(verificationPanel);
