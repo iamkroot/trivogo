@@ -390,10 +390,10 @@ public class HomePageGUI {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if(bookingsTable.getSelectedRow() != -1) {
                     Booking selectedBooking = bookings.get(bookingsTable.getSelectedRow());
-                    if(selectedBooking.getStatus().equals("CANCELLED") || selectedBooking.getStatus().equals("LAPSED")) {
+                    if(selectedBooking.getStatus().equals("CANCELLED") || selectedBooking.isLapsed()) {
                         modifyButton.setEnabled(false);
                         cancelButton.setEnabled(false);
-                        if(selectedBooking.getStatus().equals("LAPSED")) {
+                        if(selectedBooking.isLapsed()) {
                             addReviewButton.setEnabled(true);
                         }
                     }
