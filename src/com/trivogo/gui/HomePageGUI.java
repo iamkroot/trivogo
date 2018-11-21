@@ -10,24 +10,18 @@ import com.trivogo.utils.DateUtil;
 import com.trivogo.utils.Regex;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Vector;
 import java.util.List;
 
 public class HomePageGUI {
-    private User user;
     private JFrame frame1;
     private JPanel cardPanel;
     private JPanel homePanel;
@@ -129,7 +123,8 @@ public class HomePageGUI {
     private JTable reviewTable;
     private JButton backHotelsButton;
     private JCheckBox waitlistCheckBox;
-    //private JOptionPane verificationStatus;
+
+    private User user;
     DatePickerSettings inDateSettings, newInDateSettings;
     DatePickerSettings outDateSettings, newOutDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
@@ -157,8 +152,8 @@ public class HomePageGUI {
     int payableAmount;
     int rowIndex;
 
-    public HomePageGUI(User user) {
-        this.user = user;
+    public HomePageGUI(User loggedInUser) {
+        user = loggedInUser;
         frame1 = new JFrame();
         frame1.add(parentPanel);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -166,455 +161,379 @@ public class HomePageGUI {
         frame1.setVisible(true);
 
 
-        previousBookingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addReviewButton.setEnabled(false);
-                if (bookingsTable.getRowCount() > 0) {
-                    for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
-                        bookingModel.removeRow(i);
+        previousBookingButton.addActionListener(e -> {
+            addReviewButton.setEnabled(false);
+            if (bookingsTable.getRowCount() > 0) {
+                for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                    bookingModel.removeRow(i);
+                }
+            }
+            switchToPanel(previousBookingsPanel);
+            bookings = BookingDAO.getUserBookings(user);
+
+            for (Booking booking : bookings) {
+                bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                        booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                        String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
+            }
+            for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                bookingsTable.setRowHeight(i, 30);
+            }
+        });
+
+        inDatePicker.addPropertyChangeListener(propertyChangeEvent -> {
+            if(inDatePicker.getDate().isAfter(outDatePicker.getDate()) || inDatePicker.getDate().isEqual(outDatePicker.getDate())) {
+                outDatePicker.setDate(inDatePicker.getDate().plusDays(1));
+            }
+            outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), inDatePicker.getDate().plusYears(1));
+        });
+        searchButton.addActionListener(e -> {
+            location = (String) locationBox.getSelectedItem();
+            LocalDate inDate = inDatePicker.getDate();
+            LocalDate outDate = outDatePicker.getDate();
+            int noOfPeople = (int) peopleSpinner.getValue();
+            int noOfRoom = (int) roomsSpinner.getValue();
+            params = new SearchParameters(location, java.sql.Date.valueOf(inDate), java.sql.Date.valueOf(outDate), noOfPeople, noOfRoom);
+            hotels = HotelDAO.getHotelsByLocation(location);
+
+            for (Hotel hotel : hotels) {
+                hotelModel.addRow(new Object[]{hotel.getName(),hotel.getRating()});
+            }
+            for(int i=0; i<hotelTable.getRowCount(); i++) {
+                hotelTable.setRowHeight(i, 50);
+            }
+
+           switchToPanel(hotelPanel);
+        });
+        searchHotelButton.addActionListener(e -> {
+            switchToPanel(newBookingPanel);
+            if (hotelTable.getRowCount() > 0) {
+                for (int i = hotelTable.getRowCount() - 1; i > -1; i--) {
+                    hotelModel.removeRow(i);
+                }
+            }
+
+            if (roomsTable.getRowCount() > 0) {
+                for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
+                    roomModel.removeRow(i);
+                }
+            }
+
+        });
+        roomButton.addActionListener(actionEvent -> {
+
+            if(hotelTable.getSelectedRow() != -1) {
+                hotel = hotels.get(hotelTable.getSelectedRow());
+            }
+            payableAmount = 0;
+            selectedHotelLabel.setText("Hotel : " + hotel.getName());
+            payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
+            switchToPanel(roomsPanel);
+            deluxeRoom = hotel.getDexRoom();
+            stdRoom = hotel.getStdRoom();
+            roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate()});
+            roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate()});
+            for(int i=0; i<roomsTable.getRowCount(); i++) {
+                roomsTable.setRowHeight(i, 70);
+            }
+            confirmBookingButton.setEnabled(false);
+        });
+        adhaarButton.addActionListener(e -> {
+            adhaarLabel.setVisible(true);
+            adhaarField.setVisible(true);
+            panButton.setSelected(false);
+            panField.setVisible(false);
+            panLabel.setVisible(false);
+        });
+        panButton.addActionListener(e -> {
+            panField.setVisible(true);
+            panLabel.setVisible(true);
+            adhaarButton.setSelected(false);
+            adhaarLabel.setVisible(false);
+            adhaarField.setVisible(false);
+        });
+        backButton.addActionListener(e -> {
+            switchToPanel(hotelPanel);
+            if (roomsTable.getRowCount() > 0) {
+                for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
+                    roomModel.removeRow(i);
+                }
+            }
+        });
+        verifyButton.addActionListener(e -> {
+            if(adhaarButton.isSelected()) {
+                verificationNumber = adhaarField.getText();
+                if(verificationNumber.length() == 12) {
+                    if(booking.getStatus().equals("PENDING")) {
+                        booking.setStatus("CONFIRMED");
                     }
+                    booking.setBookingID(BookingDAO.addBooking(booking));
+                    booking.setPayableAmount(payableAmount);
+                    JOptionPane.showMessageDialog(null,"Verification Successfull");
+                    switchToPanel(summaryPanel);
                 }
-                switchToPanel(previousBookingsPanel);
-                bookings = BookingDAO.getUserBookings(user);
-
-                for (Booking booking : bookings) {
-                    bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
-                            booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
-                            String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
-                }
-                for(int i=0; i<bookingsTable.getRowCount(); i++) {
-                    bookingsTable.setRowHeight(i, 30);
+                else {
+                    JOptionPane.showMessageDialog(null,"Invalid Adhaar Card Number");
                 }
             }
-        });
-
-        inDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if(inDatePicker.getDate().isAfter(outDatePicker.getDate()) || inDatePicker.getDate().isEqual(outDatePicker.getDate())) {
-                    outDatePicker.setDate(inDatePicker.getDate().plusDays(1));
+            else if(panButton.isSelected()) {
+                verificationNumber = panField.getText();
+                if(verificationNumber.length() == 10) {
+                    if(booking.getStatus().equals("PENDING"))
+                        booking.setStatus("CONFIRMED");
+                    booking.setBookingID(BookingDAO.addBooking(booking));
+                    booking.setPayableAmount(payableAmount);
+                    JOptionPane.showMessageDialog(null,"Verification Successfull");
+                    switchToPanel(summaryPanel);
                 }
-                outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), inDatePicker.getDate().plusYears(1));
+                else {
+                    JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
+                }
+            }
+            nameHotelLabel.setText(booking.getHotel().getName());
+            typeRoomLabel.setText(booking.getRoom().getType());
+            numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
+            dateInLabel.setText(booking.getCheckInDate().toString());
+            dateOutLabel.setText(booking.getCheckOutDate().toString());
+            idBookingLabel.setText(String.valueOf(booking.getBookingID()));
+            statusBookingLabel.setText(booking.getStatus());
+            panButton.setSelected(false);
+            panField.setText("");
+            adhaarButton.setSelected(false);
+            adhaarField.setText("");
+
+        });
+        backRoomButton.addActionListener(e -> {
+            switchToPanel(roomsPanel);
+            panButton.setSelected(false);
+            adhaarButton.setSelected(false);
+            payableAmount = 0;
+        });
+        reviewsButton.addActionListener(actionEvent -> {
+            if(hotelTable.getSelectedRow() != -1) {
+                hotel = hotels.get(hotelTable.getSelectedRow());
             }
         });
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                location = (String) locationBox.getSelectedItem();
-                java.time.LocalDate inDate = inDatePicker.getDate();
-                java.time.LocalDate outDate = outDatePicker.getDate();
-                int noOfPeople = (int) peopleSpinner.getValue();
-                int noOfRoom = (int) roomsSpinner.getValue();
-                params = new SearchParameters(location, java.sql.Date.valueOf(inDate), java.sql.Date.valueOf(outDate), noOfPeople, noOfRoom);
-                hotels = HotelDAO.getHotelsByLocation(location);
-
-                for (Hotel hotel : hotels) {
-                    hotelModel.addRow(new Object[]{hotel.getName(),hotel.getRating()});
-                }
-                for(int i=0; i<hotelTable.getRowCount(); i++) {
-                    hotelTable.setRowHeight(i, 50);
-                }
-
-               switchToPanel(hotelPanel);
+        hotelTable.getSelectionModel().addListSelectionListener(listSelectionEvent -> {
+            if(hotelTable.getSelectedRow() != -1) {
+                reviewsButton.setEnabled(true);
+                roomButton.setEnabled(true);
+            }
+            else {
+                reviewsButton.setEnabled(false);
+                roomButton.setEnabled(false);
             }
         });
-        searchHotelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(newBookingPanel);
-                if (hotelTable.getRowCount() > 0) {
-                    for (int i = hotelTable.getRowCount() - 1; i > -1; i--) {
-                        hotelModel.removeRow(i);
-                    }
+        roomsTable.getSelectionModel().addListSelectionListener(listSelectionEvent -> {
+            if(roomsTable.getSelectedRow() != -1) {
+                confirmBookingButton.setEnabled(true);
+                int x;
+                if(roomsTable.getSelectedRow() == 0){
+                    x = hotel.getStdRoom().getRate();
+                } else {
+                    x = hotel.getDexRoom().getRate();
                 }
-
-                if (roomsTable.getRowCount() > 0) {
-                    for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
-                        roomModel.removeRow(i);
-                    }
-                }
-
-            }
-        });
-        roomButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-                if(hotelTable.getSelectedRow() != -1) {
-                    hotel = hotels.get(hotelTable.getSelectedRow());
-                }
-                payableAmount = 0;
-                selectedHotelLabel.setText("Hotel : " + hotel.getName());
+                x *= params.getNumRooms();
+                payableAmount = x*DateUtil.calcDatesDiff(params.getCheckInDate(), params.getCheckOutDate());
                 payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
-                switchToPanel(roomsPanel);
-                deluxeRoom = hotel.getDexRoom();
-                stdRoom = hotel.getStdRoom();
-                roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate()});
-                roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate()});
-                for(int i=0; i<roomsTable.getRowCount(); i++) {
-                    roomsTable.setRowHeight(i, 70);
-                }
+            }
+            else {
                 confirmBookingButton.setEnabled(false);
             }
         });
-        adhaarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                adhaarLabel.setVisible(true);
-                adhaarField.setVisible(true);
-                panButton.setSelected(false);
-                panField.setVisible(false);
-                panLabel.setVisible(false);
-            }
-        });
-        panButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                panField.setVisible(true);
-                panLabel.setVisible(true);
-                adhaarButton.setSelected(false);
-                adhaarLabel.setVisible(false);
-                adhaarField.setVisible(false);
-            }
-        });
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(hotelPanel);
-                if (roomsTable.getRowCount() > 0) {
-                    for (int i = roomsTable.getRowCount() - 1; i > -1; i--) {
-                        roomModel.removeRow(i);
-                    }
-                }
-            }
-        });
-        verifyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(adhaarButton.isSelected()) {
-                    verificationNumber = adhaarField.getText();
-                    if(verificationNumber.length() == 12) {
-                        if(booking.getStatus().equals("PENDING")) {
-                            booking.setStatus("CONFIRMED");
-                        }
-                        booking.setBookingID(BookingDAO.addBooking(booking));
-                        booking.setPayableAmount(payableAmount);
-                        JOptionPane.showMessageDialog(null,"Verification Successfull");
-                        switchToPanel(summaryPanel);
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null,"Invalid Adhaar Card Number");
-                    }
-                }
-                else if(panButton.isSelected()) {
-                    verificationNumber = panField.getText();
-                    if(verificationNumber.length() == 10) {
-                        if(booking.getStatus().equals("PENDING"))
-                            booking.setStatus("CONFIRMED");
-                        booking.setBookingID(BookingDAO.addBooking(booking));
-                        booking.setPayableAmount(payableAmount);
-                        JOptionPane.showMessageDialog(null,"Verification Successfull");
-                        switchToPanel(summaryPanel);
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
-                    }
-                }
-                nameHotelLabel.setText(booking.getHotel().getName());
-                typeRoomLabel.setText(booking.getRoom().getType());
-                numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
-                dateInLabel.setText(booking.getCheckInDate().toString());
-                dateOutLabel.setText(booking.getCheckOutDate().toString());
-                idBookingLabel.setText(String.valueOf(booking.getBookingID()));
-                statusBookingLabel.setText(booking.getStatus());
-                panButton.setSelected(false);
-                panField.setText("");
-                adhaarButton.setSelected(false);
-                adhaarField.setText("");
-
-            }
-        });
-        backRoomButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(roomsPanel);
-                panButton.setSelected(false);
-                adhaarButton.setSelected(false);
-                payableAmount = 0;
-            }
-        });
-        reviewsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if(hotelTable.getSelectedRow() != -1) {
-                    hotel = hotels.get(hotelTable.getSelectedRow());
-                }
-            }
-        });
-        hotelTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if(hotelTable.getSelectedRow() != -1) {
-                    reviewsButton.setEnabled(true);
-                    roomButton.setEnabled(true);
-                }
-                else {
-                    reviewsButton.setEnabled(false);
-                    roomButton.setEnabled(false);
-                }
-            }
-        });
-        roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if(roomsTable.getSelectedRow() != -1) {
-                    confirmBookingButton.setEnabled(true);
-                    int x;
-                    if(roomsTable.getSelectedRow() == 0){
-                        x = hotel.getStdRoom().getRate();
-                    } else {
-                        x = hotel.getDexRoom().getRate();
-                    }
-                    x *= params.getNumRooms();
-                    payableAmount = x*diffInDate(params.getCheckInDate(), params.getCheckOutDate());
-                    payableAmountLabel.setText("Total Payable Amount : Rs " + payableAmount);
-                }
-                else {
-                    confirmBookingButton.setEnabled(false);
-                }
-            }
-        });
-        bookingsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if(bookingsTable.getSelectedRow() != -1) {
-                    Booking selectedBooking = bookings.get(bookingsTable.getSelectedRow());
-                    if(selectedBooking.getStatus().equals("CANCELLED") || selectedBooking.isLapsed()) {
-                        modifyButton.setEnabled(false);
-                        cancelButton.setEnabled(false);
-                        if(selectedBooking.isLapsed()) {
-                            if(selectedBooking.getReview() == null) {
-                                addReviewButton.setEnabled(false);
-                            }
-                            else {
-                                addReviewButton.setEnabled(true);
-                            }
-                        }
-                    }
-                    else {
-                        modifyButton.setEnabled(true);
-                        cancelButton.setEnabled(true);
-                        addReviewButton.setEnabled(false);
-                    }
-                }
-                else {
+        bookingsTable.getSelectionModel().addListSelectionListener(listSelectionEvent -> {
+            if(bookingsTable.getSelectedRow() != -1) {
+                Booking selectedBooking = bookings.get(bookingsTable.getSelectedRow());
+                if(selectedBooking.getStatus().equals("CANCELLED") || selectedBooking.isLapsed()) {
                     modifyButton.setEnabled(false);
                     cancelButton.setEnabled(false);
+                    if(selectedBooking.isLapsed()) {
+                        if(selectedBooking.getReview() == null) {
+                            addReviewButton.setEnabled(false);
+                        }
+                        else {
+                            addReviewButton.setEnabled(true);
+                        }
+                    }
+                }
+                else {
+                    modifyButton.setEnabled(true);
+                    cancelButton.setEnabled(true);
                     addReviewButton.setEnabled(false);
                 }
             }
+            else {
+                modifyButton.setEnabled(false);
+                cancelButton.setEnabled(false);
+                addReviewButton.setEnabled(false);
+            }
         });
-        confirmBookingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("Standard") : hotel.getRoomInfo("Deluxe"), params, "PENDING" );
-                if (params.getNumRooms() <= BookingDAO.getNumAvailableRooms(booking)) {
+        confirmBookingButton.addActionListener(actionEvent -> {
+            booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("Standard") : hotel.getRoomInfo("Deluxe"), params, "PENDING" );
+            if (params.getNumRooms() <= BookingDAO.getNumAvailableRooms(booking)) {
+                switchToPanel(verificationPanel);
+                panLabel.setVisible(false);
+                panField.setVisible(false);
+                adhaarField.setVisible(false);
+                adhaarLabel.setVisible(false);
+            }
+            else {
+                int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
+                        " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
+                if(a == JOptionPane.YES_OPTION){
+                    booking.setStatus("WAITLIST PENDING");
                     switchToPanel(verificationPanel);
                     panLabel.setVisible(false);
                     panField.setVisible(false);
                     adhaarField.setVisible(false);
                     adhaarLabel.setVisible(false);
                 }
-                else {
-                    int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
-                            " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
-                    if(a == JOptionPane.YES_OPTION){
-                        booking.setStatus("WAITLIST PENDING");
-                        switchToPanel(verificationPanel);
-                        panLabel.setVisible(false);
-                        panField.setVisible(false);
-                        adhaarField.setVisible(false);
-                        adhaarLabel.setVisible(false);
-                    }
-                    else{
-
-                    }
-                }
             }
         });
-        prevBookingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addReviewButton.setEnabled(false);
-                if (bookingsTable.getRowCount() > 0) {
-                    for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
-                        bookingModel.removeRow(i);
-                    }
+        prevBookingButton.addActionListener(e -> {
+            addReviewButton.setEnabled(false);
+            if (bookingsTable.getRowCount() > 0) {
+                for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                    bookingModel.removeRow(i);
                 }
-                bookings = BookingDAO.getUserBookings(user);
-                for (Booking booking : bookings) {
-                    bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
-                            booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
-                            String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
-                }
-                for(int i=0; i<bookingsTable.getRowCount(); i++) {
-                    bookingsTable.setRowHeight(i, 30);
-                }
-                switchToPanel(previousBookingsPanel);
             }
-        });
-        backPrevButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(previousBookingsPanel);
+            bookings = BookingDAO.getUserBookings(user);
+            for (Booking booking : bookings) {
+                bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                        booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                        String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
             }
-        });
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(bookingsTable.getSelectedRow() != -1) {
-                    booking = bookings.get(bookingsTable.getSelectedRow());
-                    rowIndex = bookingsTable.getSelectedRow();
-                }
-                int y =  diffInDate(booking.getCheckInDate(), booking.getCheckOutDate());
-                java.util.Date today = new Date();
-                int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y;
-                int t = diffInDate(today, booking.getCheckInDate());
-                if( t == 1 || t == 2 ) {
-                    cardNumLabel.setVisible(true);
-                    cardNumField.setVisible(true);
-                    dateExpLabel.setVisible(true);
-                    dateExpField.setVisible(true);
-                    cvvField.setVisible(true);
-                    cvvLabel.setVisible(true);
-                    confirmCancelButton.setText("Confirm and Pay");
-                    paymentDueLabel.setText("Rs. "+ String.valueOf(price*0.5));
-                }else {
-                    cardNumLabel.setVisible(false);
-                    cardNumField.setVisible(false);
-                    dateExpLabel.setVisible(false);
-                    dateExpField.setVisible(false);
-                    cvvField.setVisible(false);
-                    cvvLabel.setVisible(false);
-                    confirmCancelButton.setText("Confirm");
-                    paymentDueLabel.setText("Rs. 0.0");
-                }
-                switchToPanel(cancelPanel);
+            for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                bookingsTable.setRowHeight(i, 30);
             }
+            switchToPanel(previousBookingsPanel);
         });
-        confirmCancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(booking.getPayableAmount() != 0) {
-                    if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
-                        JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
-                        booking = bookings.get(rowIndex);
-                        cancelBooking();
-                        bookingsTable.setValueAt("CANCELLED",rowIndex,6);
-                        switchToPanel(previousBookingsPanel);
-
-                    }
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
+        backPrevButton.addActionListener(e -> switchToPanel(previousBookingsPanel));
+        cancelButton.addActionListener(e -> {
+            if(bookingsTable.getSelectedRow() != -1) {
+                booking = bookings.get(bookingsTable.getSelectedRow());
+                rowIndex = bookingsTable.getSelectedRow();
+            }
+            int y =  DateUtil.calcDatesDiff(booking.getCheckInDate(), booking.getCheckOutDate());
+            Date today = new Date();
+            int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y;
+            int t = DateUtil.calcDatesDiff(today, booking.getCheckInDate());
+            if( t == 1 || t == 2 ) {
+                cardNumLabel.setVisible(true);
+                cardNumField.setVisible(true);
+                dateExpLabel.setVisible(true);
+                dateExpField.setVisible(true);
+                cvvField.setVisible(true);
+                cvvLabel.setVisible(true);
+                confirmCancelButton.setText("Confirm and Pay");
+                paymentDueLabel.setText("Rs. "+ String.valueOf(price*0.5));
+            }else {
+                cardNumLabel.setVisible(false);
+                cardNumField.setVisible(false);
+                dateExpLabel.setVisible(false);
+                dateExpField.setVisible(false);
+                cvvField.setVisible(false);
+                cvvLabel.setVisible(false);
+                confirmCancelButton.setText("Confirm");
+                paymentDueLabel.setText("Rs. 0.0");
+            }
+            switchToPanel(cancelPanel);
+        });
+        confirmCancelButton.addActionListener(e -> {
+            if(booking.getPayableAmount() != 0) {
+                if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
+                    JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
                     booking = bookings.get(rowIndex);
                     cancelBooking();
                     bookingsTable.setValueAt("CANCELLED",rowIndex,6);
                     switchToPanel(previousBookingsPanel);
+
                 }
             }
-        });
-        backModifyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            else {
+                JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
+                booking = bookings.get(rowIndex);
+                cancelBooking();
+                bookingsTable.setValueAt("CANCELLED",rowIndex,6);
                 switchToPanel(previousBookingsPanel);
             }
         });
-        addReviewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        backModifyButton.addActionListener(e -> switchToPanel(previousBookingsPanel));
+        addReviewButton.addActionListener(e -> {
+            selectedBooking = bookings.get(bookingsTable.getSelectedRow());
+            switchToPanel(writeReviewPanel);
+
+        });
+        submitReviewButton.addActionListener(e -> {
+            String reviewDescription = overallReviewField.getText();
+            int location = (int) locationSpinner.getValue();
+            int rooms = (int) roomReviewSpinner.getValue();
+            int services = (int) serviceSpinner.getValue();
+            int clean = (int) cleanlinessSpinner.getValue();
+            int valForMoney = (int) valForMonSpinner.getValue();
+            Review review = new Review(selectedBooking.getHotel(),selectedBooking.getUser(),reviewDescription, location, rooms, services,
+                    clean,valForMoney);
+            ReviewDAO.addReview(selectedBooking.getBookingID(),review);
+            JOptionPane.showMessageDialog(null,"Review successfully added.");
+            switchToPanel(previousBookingsPanel);
+        });
+        reviewsButton.addActionListener(e -> {
+            if (reviewTable.getRowCount() > 0) {
+                for (int i = reviewTable.getRowCount() - 1; i > -1; i--) {
+                    reviewModel.removeRow(i);
+                }
+            }
+
+            reviews = ReviewDAO.getHotelReviews(hotels.get(hotelTable.getSelectedRow()));
+
+            for (Review review : reviews) {
+                reviewModel.addRow(new Object[]{review.getHotel().getName(),review.getUser().getUsername(),review.getReviewDescription(),
+                review.getParamLocation(),review.getParamRoom(),review.getParamService(),review.getParamClean(),review.getParamValueForMoney()});
+            }
+            for(int i=0; i<reviewTable.getRowCount(); i++) {
+                reviewTable.setRowHeight(i, 50);
+            }
+            switchToPanel(viewReviewPanel);
+        });
+        backHotelsButton.addActionListener(e -> switchToPanel(hotelPanel));
+        modifyButton.addActionListener(actionEvent -> {
+            if(bookingsTable.getSelectedRow() != -1) {
                 selectedBooking = bookings.get(bookingsTable.getSelectedRow());
-                switchToPanel(writeReviewPanel);
-
+                rowIndex = bookingsTable.getSelectedRow();
             }
+            LocalDate oldCheckInDate = DateUtil.toLocalDate(selectedBooking.getCheckInDate()), oldCheckOutDate = DateUtil.toLocalDate(selectedBooking.getCheckOutDate());
+            newInDatePicker.setDate(oldCheckInDate);
+            newInDateSettings.setDateRangeLimits(oldCheckInDate.minusDays(5), oldCheckInDate.plusDays(5));
+            newOutDatePicker.setDate(oldCheckOutDate);
+            newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), oldCheckOutDate.plusDays(5));
+            switchToPanel(modifyPanel);
         });
-        submitReviewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String reviewDescription = overallReviewField.getText();
-                int location = (int) locationSpinner.getValue();
-                int rooms = (int) roomReviewSpinner.getValue();
-                int services = (int) serviceSpinner.getValue();
-                int clean = (int) cleanlinessSpinner.getValue();
-                int valForMoney = (int) valForMonSpinner.getValue();
-                Review review = new Review(selectedBooking.getHotel(),selectedBooking.getUser(),reviewDescription, location, rooms, services,
-                        clean,valForMoney);
-                ReviewDAO.addReview(selectedBooking.getBookingID(),review);
-                JOptionPane.showMessageDialog(null,"Review successfully added.");
-                switchToPanel(previousBookingsPanel);
+        confirmModButton.addActionListener(actionEvent -> {
+            Booking tempBooking = new Booking(selectedBooking);
+            Date newCheckInDate = DateUtil.toDate(newInDatePicker.getDate()), newCheckOutDate = DateUtil.toDate(newOutDatePicker.getDate());
+            tempBooking.setCheckInDate(newCheckInDate);
+            tempBooking.setCheckOutDate(newCheckOutDate);
+            BookingDAO.updateStatus(selectedBooking.getBookingID(), "PENDING MODIFY");
+            if(tempBooking.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(tempBooking)){
+                tempBooking.setStatus("CONFIRMED");
+                BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
+                selectedBooking = tempBooking;
+                nameHotelLabel.setText(selectedBooking.getHotel().getName());
+                typeRoomLabel.setText(selectedBooking.getRoom().getType());
+                numRoomsLabel.setText(String.valueOf(selectedBooking.getNumOfRooms()));
+                dateInLabel.setText(selectedBooking.getCheckInDate().toString());
+                dateOutLabel.setText(selectedBooking.getCheckOutDate().toString());
+                idBookingLabel.setText(String.valueOf(selectedBooking.getBookingID()));
+                statusBookingLabel.setText(selectedBooking.getStatus());
+                switchToPanel(summaryPanel);
             }
-        });
-        reviewsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (reviewTable.getRowCount() > 0) {
-                    for (int i = reviewTable.getRowCount() - 1; i > -1; i--) {
-                        reviewModel.removeRow(i);
-                    }
-                }
-
-                reviews = ReviewDAO.getHotelReviews(hotels.get(hotelTable.getSelectedRow()));
-
-                for (Review review : reviews) {
-                    reviewModel.addRow(new Object[]{review.getHotel().getName(),review.getUser().getUsername(),review.getReviewDescription(),
-                    review.getParamLocation(),review.getParamRoom(),review.getParamService(),review.getParamClean(),review.getParamValueForMoney()});
-                }
-                for(int i=0; i<reviewTable.getRowCount(); i++) {
-                    reviewTable.setRowHeight(i, 50);
-                }
-                switchToPanel(viewReviewPanel);
-            }
-        });
-        backHotelsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(hotelPanel);
-            }
-        });
-        modifyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if(bookingsTable.getSelectedRow() != -1) {
-                    selectedBooking = bookings.get(bookingsTable.getSelectedRow());
-                    rowIndex = bookingsTable.getSelectedRow();
-                }
-                Date oldCheckInDate = selectedBooking.getCheckInDate(), oldCheckOutDate = selectedBooking.getCheckOutDate();
-                // Only allow changing to 5 days before or after current dates
-                LocalDate newInLimit = DateUtil.toLocalDate(oldCheckInDate).minusDays(5), newOutLimit = DateUtil.toLocalDate(oldCheckOutDate).plusDays(5);
-                if (LocalDate.now().isAfter(newInLimit)){
-                    newInLimit = LocalDate.now();
-                }
-                newInDatePicker.setDate(LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()));
-                newInDateSettings.setDateRangeLimits(LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()).minusDays(5),
-                        LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()).plusDays(5));
-                newOutDatePicker.setDate(LocalDate.ofInstant(selectedBooking.getCheckOutDate().toInstant(), ZoneId.systemDefault()));
-                switchToPanel(modifyPanel);
-            }
-        });
-        confirmModButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Booking tempBooking = new Booking(selectedBooking);
-                Date newCheckInDate = DateUtil.toDate(newInDatePicker.getDate()), newCheckOutDate = DateUtil.toDate(newOutDatePicker.getDate());
-                tempBooking.setCheckInDate(newCheckInDate);
-                tempBooking.setCheckOutDate(newCheckOutDate);
-                BookingDAO.updateStatus(selectedBooking.getBookingID(), "PENDING MODIFY");
-                if(tempBooking.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(tempBooking)){
-                    tempBooking.setStatus("CONFIRMED");
-                    BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
+            else{
+                int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
+                        " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
+                if(a == JOptionPane.YES_OPTION){
+                    tempBooking.setStatus("WAITLIST PENDING");
                     selectedBooking = tempBooking;
-                    //TODO: Set labels for all fields in summaryPanel
+                    BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
                     nameHotelLabel.setText(selectedBooking.getHotel().getName());
                     typeRoomLabel.setText(selectedBooking.getRoom().getType());
                     numRoomsLabel.setText(String.valueOf(selectedBooking.getNumOfRooms()));
@@ -624,66 +543,51 @@ public class HomePageGUI {
                     statusBookingLabel.setText(selectedBooking.getStatus());
                     switchToPanel(summaryPanel);
                 }
-                else{
-                    int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
-                            " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
-                    if(a == JOptionPane.YES_OPTION){
-                        tempBooking.setStatus("WAITLIST PENDING");
-                        selectedBooking = tempBooking;
-                        BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
-                        //TODO: Set labels for all fields in summaryPanel
-                        nameHotelLabel.setText(selectedBooking.getHotel().getName());
-                        typeRoomLabel.setText(selectedBooking.getRoom().getType());
-                        numRoomsLabel.setText(String.valueOf(selectedBooking.getNumOfRooms()));
-                        dateInLabel.setText(selectedBooking.getCheckInDate().toString());
-                        dateOutLabel.setText(selectedBooking.getCheckOutDate().toString());
-                        idBookingLabel.setText(String.valueOf(selectedBooking.getBookingID()));
-                        statusBookingLabel.setText(selectedBooking.getStatus());
-                        switchToPanel(summaryPanel);
+            }
+            BookingDAO.updateStatus(selectedBooking.getBookingID(), selectedBooking.getStatus());
+        });
+        waitlistCheckBox.addActionListener(e -> {
+            TableRowSorter<DefaultTableModel>tr = new TableRowSorter<>(bookingModel);
+            bookingsTable.setRowSorter(tr);
+            if(waitlistCheckBox.isSelected()) {
+                tr.setRowFilter(RowFilter.regexFilter("WAITLIST",6));
+                for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                    bookingsTable.setRowHeight(i, 30);
+                }
+            }
+            else {
+                if (bookingsTable.getRowCount() > 0) {
+                    for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                        bookingModel.removeRow(i);
                     }
                 }
-                BookingDAO.updateStatus(selectedBooking.getBookingID(), selectedBooking.getStatus());
+                bookings = BookingDAO.getUserBookings(user);
+                for (Booking booking : bookings) {
+                    bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                            booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                            String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
+                }
+                for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                    bookingsTable.setRowHeight(i, 30);
+                }
             }
+        });
+        newInDatePicker.addPropertyChangeListener(propertyChangeEvent -> {
+            if(newInDatePicker.getDate().isAfter(newOutDatePicker.getDate()) || newInDatePicker.getDate().isEqual(newOutDatePicker.getDate())) {
+                newOutDatePicker.setDate(newInDatePicker.getDate().plusDays(1));
+            }
+            LocalDate rightLimit = null;
+            if(selectedBooking != null)
+                rightLimit = DateUtil.toLocalDate(selectedBooking.getCheckOutDate()).plusDays(5);
+            newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), rightLimit);
+        });
+    }
 
-        });
-        waitlistCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TableRowSorter<DefaultTableModel>tr = new TableRowSorter<DefaultTableModel>(bookingModel);
-                bookingsTable.setRowSorter(tr);
-                if(waitlistCheckBox.isSelected()) {
-                    tr.setRowFilter(RowFilter.regexFilter("WAITLIST",6));
-                    for(int i=0; i<bookingsTable.getRowCount(); i++) {
-                        bookingsTable.setRowHeight(i, 30);
-                    }
-                }
-                else {
-                    if (bookingsTable.getRowCount() > 0) {
-                        for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
-                            bookingModel.removeRow(i);
-                        }
-                    }
-                    bookings = BookingDAO.getUserBookings(user);
-                    for (Booking booking : bookings) {
-                        bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
-                                booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
-                                String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
-                    }
-                    for(int i=0; i<bookingsTable.getRowCount(); i++) {
-                        bookingsTable.setRowHeight(i, 30);
-                    }
-                }
-            }
-        });
-        newInDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if(newInDatePicker.getDate().isAfter(newOutDatePicker.getDate()) || newInDatePicker.getDate().isEqual(newOutDatePicker.getDate())) {
-                    newOutDatePicker.setDate(newInDatePicker.getDate().plusDays(1));
-                }
-                newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), newInDatePicker.getDate().plusYears(1));
-            }
-        });
+    private void switchToPanel(JPanel jpanel){
+        cardPanel.removeAll();
+        cardPanel.add(jpanel);
+        cardPanel.repaint();
+        cardPanel.revalidate();
     }
 
     private void cancelBooking() {
@@ -702,7 +606,6 @@ public class HomePageGUI {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         hotelTable = new JTable() {
             private static final long serialVersionUID = 1L;
 
@@ -749,18 +652,13 @@ public class HomePageGUI {
         bookingModel.addColumn("Room Type");
         bookingModel.addColumn("Number of Rooms");
         bookingModel.addColumn("Status");
-
-
-
         bookingsTable.setModel(bookingModel);
-
 
         reviewTable = new JTable() {
             private static final long serialVersionUID = 1L;
-
             public boolean isCellEditable(int row, int column) {
                 return false;
-            };
+            }
         };
         reviewTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         reviewModel = new DefaultTableModel();
@@ -773,43 +671,27 @@ public class HomePageGUI {
         reviewModel.addColumn("Hotel Cleanliness");
         reviewModel.addColumn("Value for Money");
 
-
         reviewTable.setModel(reviewModel);
 
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
 
         final LocalDate today = LocalDate.now();
-        inDateSettings = new DatePickerSettings();
-        inDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
-        inDateSettings.setAllowKeyboardEditing(true);
+        inDateSettings = DateUtil.createDefaultSettings();
         inDatePicker = new DatePicker(inDateSettings);
-        inDateSettings.setAllowEmptyDates(false);
-        inDateSettings.setAllowKeyboardEditing(true);
         inDateSettings.setDateRangeLimits(today.plusDays(1), today.plusYears(1));
         inDatePicker.setDate(today.plusDays(1));
 
-        outDateSettings = new DatePickerSettings();
-        outDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
-        outDateSettings.setAllowKeyboardEditing(true);
+        outDateSettings = DateUtil.createDefaultSettings();
         outDatePicker = new DatePicker(outDateSettings);
-        outDateSettings.setAllowEmptyDates(false);
-        outDateSettings.setAllowKeyboardEditing(true);
-        outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), today.plusYears(1));
         outDatePicker.setDate(inDatePicker.getDate().plusDays(1));
+        outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), today.plusYears(1));
 
-        newInDateSettings = new DatePickerSettings();
-        newInDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
-        newInDateSettings.setAllowKeyboardEditing(true);
+        newInDateSettings = DateUtil.createDefaultSettings();
         newInDatePicker = new DatePicker(newInDateSettings);
-        newInDateSettings.setAllowEmptyDates(false);
 
-        newOutDateSettings = new DatePickerSettings();
-        newOutDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
-        newOutDateSettings.setAllowKeyboardEditing(true);
+        newOutDateSettings = DateUtil.createDefaultSettings();
         newOutDatePicker = new DatePicker(newOutDateSettings);
-        newOutDateSettings.setAllowEmptyDates(false);
-        //newOutDateSettings.setDateRangeLimits(outDatePicker.getDate(), today.plusYears(1));
 
         peopleSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
         peopleSpinner = new JSpinner(peopleSpinnerNumberModel);
@@ -831,18 +713,5 @@ public class HomePageGUI {
 
         valForMoneySpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
         valForMonSpinner = new JSpinner(valForMoneySpinnerNumberModel);
-    }
-
-    private void switchToPanel(JPanel jpanel){
-        cardPanel.removeAll();
-        cardPanel.add(jpanel);
-        cardPanel.repaint();
-        cardPanel.revalidate();
-    }
-
-    private int diffInDate(Date d1, Date d2){
-        Long difference =  (d1.getTime()-d2.getTime())/86400000;
-        Integer y = difference.intValue();
-        return -y;
     }
 }

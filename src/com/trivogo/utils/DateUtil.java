@@ -1,5 +1,6 @@
 package com.trivogo.utils;
 
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.models.Location;
 
 import java.text.ParseException;
@@ -22,10 +23,23 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }
+    public static int calcDatesDiff(Date d1, Date d2){
+        Long difference =  (d1.getTime()-d2.getTime())/86400000;
+        Integer y = difference.intValue();
+        return -y;
+    }
     public static LocalDate toLocalDate(Date date){
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
     public static Date toDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+    public static DatePickerSettings createDefaultSettings() {
+        DatePickerSettings DateSettings = new DatePickerSettings();
+        DateSettings.setFormatForDatesCommonEra("d MMM yyyy");
+        DateSettings.setAllowKeyboardEditing(true);
+        DateSettings.setAllowEmptyDates(false);
+        DateSettings.setAllowKeyboardEditing(true);
+        return DateSettings;
     }
 }
