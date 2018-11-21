@@ -94,7 +94,7 @@ public class HomePageGUI {
     private JTextField dateExpField;
     private JLabel cvvLabel;
     private JTextField cvvField;
-    private JButton confirmButton;
+    private JButton confirmCancelButton;
     private JButton backPrevButton;
     private JLabel newInDateLabel;
     private JTextField textField1;
@@ -122,6 +122,7 @@ public class HomePageGUI {
     Booking booking;
     SearchParameters params;
     int payableAmount;
+    int rowIndex;
 
     public HomePageGUI(User user) {
         this.user = user;
@@ -423,18 +424,20 @@ public class HomePageGUI {
             public void actionPerformed(ActionEvent e) {
                 if(bookingsTable.getSelectedRow() != -1) {
                     booking = bookings.get(bookingsTable.getSelectedRow());
+                    rowIndex = bookingsTable.getSelectedRow();
                 }
                 int y =  diffInDate(booking.getCheckInDate(), booking.getCheckOutDate());
                 java.util.Date today = new Date();
                 int price = booking.getNumOfRooms()*booking.getRoom().getRate()*y;
-                if( y == 1 || y == 2 ) {
+                int t = diffInDate(today, booking.getCheckInDate());
+                if( t == 1 || t == 2 ) {
                     cardNumLabel.setVisible(true);
                     cardNumField.setVisible(true);
                     dateExpLabel.setVisible(true);
                     dateExpField.setVisible(true);
                     cvvField.setVisible(true);
                     cvvLabel.setVisible(true);
-                    confirmButton.setText("Confirm and Pay");
+                    confirmCancelButton.setText("Confirm and Pay");
                     paymentDueLabel.setText("Rs. "+ String.valueOf(price*0.5));
                 }else {
                     cardNumLabel.setVisible(false);
@@ -443,24 +446,31 @@ public class HomePageGUI {
                     dateExpField.setVisible(false);
                     cvvField.setVisible(false);
                     cvvLabel.setVisible(false);
-                    confirmButton.setText("Confirm");
+                    confirmCancelButton.setText("Confirm");
                     paymentDueLabel.setText("Rs. 0.0");
                 }
                 switchToPanel(cancelPanel);
             }
         });
-        confirmButton.addActionListener(new ActionListener() {
+        confirmCancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(booking.getPayableAmount() != 0) {
                     if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
                         JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
+                        booking = bookings.get(rowIndex);
                         cancelBooking();
+                        bookingsTable.setValueAt("CANCELLED",rowIndex,6);
+                        switchToPanel(previousBookingsPanel);
+
                     }
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
+                    booking = bookings.get(rowIndex);
                     cancelBooking();
+                    bookingsTable.setValueAt("CANCELLED",rowIndex,6);
+                    switchToPanel(previousBookingsPanel);
                 }
             }
         });
@@ -503,7 +513,7 @@ public class HomePageGUI {
 
             public boolean isCellEditable(int row, int column) {
                 return false;
-            };
+            }
         };
 
         roomsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
