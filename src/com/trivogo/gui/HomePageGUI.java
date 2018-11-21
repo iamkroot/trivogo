@@ -368,7 +368,7 @@ public class HomePageGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("standard") : hotel.getRoomInfo("deluxe"), params, "PENDING" );
-                if (params.getNumRooms() <= com.trivogo.dao.BookingDAO.getNumAvailableRooms(booking)) {
+                if (params.getNumRooms() <= BookingDAO.getNumAvailableRooms(booking)) {
                     switchToPanel(verificationPanel);
                     panLabel.setVisible(false);
                     panField.setVisible(false);
@@ -455,16 +455,31 @@ public class HomePageGUI {
                 if(booking.getPayableAmount() != 0) {
                     if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
                         JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
-                        booking.setStatus("CANCELLED");
-                        // TODO: 21/11/18 load data into table again
+                        cancelBooking();
                     }
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Booking successfully cancelled.");
-                    booking.setStatus("CANCELLED");
+                    cancelBooking();
                 }
             }
         });
+    }
+
+    private void cancelBooking() {
+        booking.setStatus("CANCELLED");
+        BookingDAO.cancelBooking(booking.getBookingID());
+        updateWaitlistedBookings(booking);
+    }
+
+    private void updateWaitlistedBookings(Booking booking) {
+        List<Booking> waitlistedBookings = BookingDAO.getWaitlistPendingBookings(booking.getHotel(), booking.getRoom());
+        for(Booking waitlisted: waitlistedBookings) {
+            if(waitlisted.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(waitlisted)){
+                waitlisted.setStatus("WAITLIST CONFIRMED");
+                BookingDAO.confirmWaitlistedBooking(waitlisted.getBookingID());
+            }
+        }
     }
 
     private void createUIComponents() {

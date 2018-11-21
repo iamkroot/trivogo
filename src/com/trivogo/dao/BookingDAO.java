@@ -115,6 +115,22 @@ public class BookingDAO {
         return booking;
     }
 
+    public static List<Booking> getWaitlistPendingBookings(Hotel hotel, HotelRoom hotelRoom) {
+        List<Booking> bookingsList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM bookings WHERE status = 'WAITLIST PENDING'" +
+                    "AND hotelID = ? AND roomType = ?");
+            ps.setInt(1, hotel.getId());
+            ps.setString(2, hotelRoom.getType());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                bookingsList.add(fromResultSet(rs));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookingsList;
+    }
+
     public static List<Booking> getHotelBookings(Hotel hotel) {
         List<Booking> bookings = new ArrayList<>();
         try {
