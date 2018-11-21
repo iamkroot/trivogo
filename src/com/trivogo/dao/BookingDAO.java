@@ -83,11 +83,7 @@ public class BookingDAO {
         Booking booking = null;
         try {
             Hotel hotel = HotelDAO.getHotelByID(rs.getInt("hotelID"));
-            HotelRoom hotelRoom;
-            if (rs.getString("roomType").equals("deluxe"))
-                hotelRoom = hotel.getDexRoom();
-            else
-                hotelRoom = hotel.getStdRoom();
+            HotelRoom hotelRoom = hotel.getRoomInfo(rs.getString("roomType"));
             booking = new Booking(hotel, UserDAO.getUser(rs.getString("user")),
                     hotelRoom, rs.getInt("numRooms"),
                     DateUtil.readFromDB(rs.getString("checkInDate")),

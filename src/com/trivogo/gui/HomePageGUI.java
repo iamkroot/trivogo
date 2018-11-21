@@ -229,6 +229,7 @@ public class HomePageGUI {
             stdRoom = hotel.getStdRoom();
             int availableDexRooms = BookingDAO.getNumAvailableRooms(params.getCheckInDate(), params.getCheckOutDate(), hotel, deluxeRoom);
             int availableStdRooms = BookingDAO.getNumAvailableRooms(params.getCheckInDate(), params.getCheckOutDate(), hotel, stdRoom);
+            System.out.println(hotel.getName() + availableDexRooms+ availableStdRooms);
             roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate(), availableStdRooms >= params.getNumRooms() ? "Available": "Unavailable"});
             roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate(), availableDexRooms >= params.getNumRooms() ? "Available": "Unavailable"});
             for(int i=0; i<roomsTable.getRowCount(); i++) {
@@ -448,7 +449,6 @@ public class HomePageGUI {
                     cancelBooking();
                     bookingsTable.setValueAt("CANCELLED",rowIndex,6);
                     switchToPanel(previousBookingsPanel);
-
                 }
             }
             else {
@@ -602,6 +602,20 @@ public class HomePageGUI {
             if(waitlisted.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(waitlisted)){
                 BookingDAO.confirmWaitlistedBooking(waitlisted.getBookingID());
             }
+        }
+        if (bookingsTable.getRowCount() > 0) {
+            for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                bookingModel.removeRow(i);
+            }
+        }
+        bookings = BookingDAO.getUserBookings(user);
+        for (Booking bookingrow : bookings) {
+            bookingModel.addRow(new Object[]{String.valueOf(bookingrow.getBookingID()),bookingrow.getHotel().getName(),
+                    bookingrow.getCheckInDate().toString(),bookingrow.getCheckOutDate().toString(),bookingrow.getRoom().getType(),
+                    String.valueOf(bookingrow.getNumOfRooms()),bookingrow.getStatus()});
+        }
+        for(int i=0; i<bookingsTable.getRowCount(); i++) {
+            bookingsTable.setRowHeight(i, 30);
         }
     }
 
