@@ -394,7 +394,12 @@ public class HomePageGUI {
                         modifyButton.setEnabled(false);
                         cancelButton.setEnabled(false);
                         if(selectedBooking.isLapsed()) {
-                            addReviewButton.setEnabled(true);
+                            if(selectedBooking.getReview() == null) {
+                                addReviewButton.setEnabled(false);
+                            }
+                            else {
+                                addReviewButton.setEnabled(true);
+                            }
                         }
                     }
                     else {
