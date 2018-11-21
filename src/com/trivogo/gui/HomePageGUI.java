@@ -507,7 +507,7 @@ public class HomePageGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(booking.getPayableAmount() != 0) {
-                    if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
+                    if((cvvField.toString().length() == 3) && Regex.validate_expdate(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
                         JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
                         booking = bookings.get(rowIndex);
                         cancelBooking();
