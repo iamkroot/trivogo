@@ -474,6 +474,44 @@ public class HomePageGUI {
                 }
             }
         });
+        modifyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(bookingsTable.getSelectedRow() != -1) {
+                    booking = bookings.get(bookingsTable.getSelectedRow());
+                    rowIndex = bookingsTable.getSelectedRow();
+                }
+                switchToPanel(modifyPanel);
+            }
+        });
+        confirmModButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Booking tempBooking = new Booking(booking);
+                // TODO: get from datepicker
+                Date newCheckInDate = new Date(), newCheckOutDate = new Date();
+                tempBooking.setCheckInDate(newCheckInDate);
+                tempBooking.setCheckOutDate(newCheckOutDate);
+                if(tempBooking.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(tempBooking)){
+                    BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
+                    booking = tempBooking;
+                    //TODO: Set labels for all fields in summaryPanel
+                    switchToPanel(summaryPanel);
+                }
+                else{
+                    int a = JOptionPane.showConfirmDialog(frame1, "There are no rooms available for your duration of stay. But we can add you to the waiting list." +
+                            " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
+                    if(a == JOptionPane.YES_OPTION){
+                        booking = tempBooking;
+                        booking.setStatus("WAITLIST PENDING");
+                        BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
+                        BookingDAO.updateBooking(booking.getBookingID(), booking.getStatus());
+                        //TODO: Set labels for all fields in summaryPanel
+                        switchToPanel(summaryPanel);
+                    }
+                }
+            }
+        });
     }
 
     private void cancelBooking() {

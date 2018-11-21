@@ -15,7 +15,13 @@ public class Booking {
     public Booking(Hotel hotel, User user, HotelRoom room, SearchParameters params, String status) {
         this(hotel, user, room, params.getNumRooms(), params.getCheckInDate(), params.getCheckOutDate(), status);
     }
-    
+
+    public Booking(Booking booking) {
+        this(booking.getHotel(), booking.getUser(), booking.getRoom(), booking.getNumOfRooms(), booking.getCheckInDate(), booking.getCheckOutDate(), booking.getStatus());
+        this.payableAmount = booking.getPayableAmount();
+        this.bookingID = booking.getBookingID();
+    }
+
     public Booking(Hotel hotel, User user, HotelRoom room, int numRooms, java.util.Date inDate, java.util.Date outDate, String stat) {
         setHotel(hotel);
         setUser(user);

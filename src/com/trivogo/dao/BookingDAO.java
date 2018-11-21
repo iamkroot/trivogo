@@ -48,9 +48,9 @@ public class BookingDAO {
             e.printStackTrace();
         }
     }
-    private static void updateBooking(int bookingID, String status) {
+    public static void updateBooking(int bookingID, String status) {
         try {
-            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = ? WHERE ROWID = ?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = ? WHERE id = ?");
             ps.setString(1, status);
             ps.setInt(2, bookingID);
             ps.executeUpdate();
