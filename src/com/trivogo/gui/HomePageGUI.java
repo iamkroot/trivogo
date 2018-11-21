@@ -4,6 +4,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.trivogo.dao.BookingDAO;
 import com.trivogo.dao.HotelDAO;
+import com.trivogo.dao.ReviewDAO;
 import com.trivogo.models.*;
 import com.trivogo.utils.Regex;
 
@@ -13,6 +14,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
@@ -101,25 +103,51 @@ public class HomePageGUI {
     private JLabel newOutDateLabel;
     private JTextField textField2;
     private JButton confirmModButton;
-    private JButton button2;
+    private JButton backModifyButton;
     private JLabel selectedHotelLabel;
     private JLabel payableAmountLabel;
+    private JPanel viewReviewPanel;
+    private JButton addReviewButton;
+    private JPanel writeReviewPanel;
+    private JSpinner locationSpinner;
+    private JLabel hotelLocLabel;
+    private JLabel hotelRoomLabel;
+    private JSpinner roomReviewSpinner;
+    private JLabel serviceLabel;
+    private JSpinner serviceSpinner;
+    private JLabel cleanlinessLabel;
+    private JSpinner cleanlinessSpinner;
+    private JLabel valueMoneyLabel;
+    private JSpinner valForMonSpinner;
+    private JLabel overallReviewLabel;
+    private JTextArea overallReviewField;
+    private JButton submitReviewButton;
+    private JTable reviewTable;
+    private JButton backHotelsButton;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings;
     DatePickerSettings outDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
     SpinnerNumberModel roomSpinnerNumberModel;
+    SpinnerNumberModel locationSpinnerNumberModel;
+    SpinnerNumberModel roomReviewSpinnerNumberModel;
+    SpinnerNumberModel servicesSpinnerNumberModel;
+    SpinnerNumberModel cleanSpinnerNumberModel;
+    SpinnerNumberModel valForMoneySpinnerNumberModel;
     DefaultTableModel hotelModel;
     DefaultTableModel roomModel;
     DefaultTableModel bookingModel;
+    DefaultTableModel reviewModel;
     String location;
     List<Hotel> hotels;
     List<Booking> bookings;
+    List<Review> reviews;
     Hotel hotel;
     HotelRoom stdRoom;
     HotelRoom deluxeRoom;
     String verificationNumber;
     Booking booking;
+    Booking selectedBooking;
     SearchParameters params;
     int payableAmount;
     int rowIndex;
@@ -136,6 +164,7 @@ public class HomePageGUI {
         previousBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                addReviewButton.setEnabled(false);
                 if (bookingsTable.getRowCount() > 0) {
                     for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
                         bookingModel.removeRow(i);
@@ -152,7 +181,6 @@ public class HomePageGUI {
                 for(int i=0; i<bookingsTable.getRowCount(); i++) {
                     bookingsTable.setRowHeight(i, 30);
                 }
-
             }
         });
 
@@ -356,12 +384,24 @@ public class HomePageGUI {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if(bookingsTable.getSelectedRow() != -1) {
-                    modifyButton.setEnabled(true);
-                    cancelButton.setEnabled(true);
+                    Booking selectedBooking = bookings.get(bookingsTable.getSelectedRow());
+                    if(selectedBooking.getStatus().equals("CANCELLED") || selectedBooking.getStatus().equals("LAPSED")) {
+                        modifyButton.setEnabled(false);
+                        cancelButton.setEnabled(false);
+                        if(selectedBooking.getStatus().equals("LAPSED")) {
+                            addReviewButton.setEnabled(true);
+                        }
+                    }
+                    else {
+                        modifyButton.setEnabled(true);
+                        cancelButton.setEnabled(true);
+                        addReviewButton.setEnabled(false);
+                    }
                 }
                 else {
                     modifyButton.setEnabled(false);
                     cancelButton.setEnabled(false);
+                    addReviewButton.setEnabled(false);
                 }
             }
         });
@@ -396,6 +436,7 @@ public class HomePageGUI {
         prevBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                addReviewButton.setEnabled(false);
                 if (bookingsTable.getRowCount() > 0) {
                     for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
                         bookingModel.removeRow(i);
@@ -472,6 +513,70 @@ public class HomePageGUI {
                     bookingsTable.setValueAt("CANCELLED",rowIndex,6);
                     switchToPanel(previousBookingsPanel);
                 }
+            }
+        });
+        backModifyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(previousBookingsPanel);
+            }
+        });
+        modifyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(modifyPanel);
+            }
+        });
+
+        addReviewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedBooking = bookings.get(bookingsTable.getSelectedRow());
+                switchToPanel(writeReviewPanel);
+
+            }
+        });
+        submitReviewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String reviewDescription = overallReviewField.getText();
+                int location = (int) locationSpinner.getValue();
+                int rooms = (int) roomReviewSpinner.getValue();
+                int services = (int) serviceSpinner.getValue();
+                int clean = (int) cleanlinessSpinner.getValue();
+                int valForMoney = (int) valForMonSpinner.getValue();
+                Review review = new Review(selectedBooking.getHotel(),selectedBooking.getUser(),reviewDescription, location, rooms, services,
+                        clean,valForMoney);
+                ReviewDAO.addReview(selectedBooking.getBookingID(),review);
+                JOptionPane.showMessageDialog(null,"Review successfully added.");
+                switchToPanel(previousBookingsPanel);
+            }
+        });
+        reviewsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (reviewTable.getRowCount() > 0) {
+                    for (int i = reviewTable.getRowCount() - 1; i > -1; i--) {
+                        reviewModel.removeRow(i);
+                    }
+                }
+
+                reviews = ReviewDAO.getHotelReviews(hotels.get(hotelTable.getSelectedRow()));
+
+                for (Review review : reviews) {
+                    reviewModel.addRow(new Object[]{review.getHotel().getName(),review.getUser().getUsername(),review.getReviewDescription(),
+                    review.getParamLocation(),review.getParamRoom(),review.getParamService(),review.getParamClean(),review.getParamValueForMoney()});
+                }
+                for(int i=0; i<reviewTable.getRowCount(); i++) {
+                    reviewTable.setRowHeight(i, 50);
+                }
+                switchToPanel(viewReviewPanel);
+            }
+        });
+        backHotelsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(hotelPanel);
             }
         });
         modifyButton.addActionListener(new ActionListener() {
@@ -583,6 +688,27 @@ public class HomePageGUI {
 
         bookingsTable.setModel(bookingModel);
 
+        reviewTable = new JTable() {
+            private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+        reviewTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        reviewModel = new DefaultTableModel();
+        reviewModel.addColumn("Hotel Name");
+        reviewModel.addColumn("User Name");
+        reviewModel.addColumn("Review");
+        reviewModel.addColumn("Hotel Location");
+        reviewModel.addColumn("Hotel Rooms");
+        reviewModel.addColumn("Hotel Services");
+        reviewModel.addColumn("Hotel Cleanliness");
+        reviewModel.addColumn("Value for Money");
+
+
+        reviewTable.setModel(reviewModel);
+
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
 
@@ -610,6 +736,21 @@ public class HomePageGUI {
 
         roomSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
         roomsSpinner = new JSpinner(roomSpinnerNumberModel);
+
+        locationSpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
+        locationSpinner = new JSpinner(locationSpinnerNumberModel);
+
+        roomReviewSpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
+        roomReviewSpinner = new JSpinner(roomReviewSpinnerNumberModel);
+
+        servicesSpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
+        serviceSpinner = new JSpinner(servicesSpinnerNumberModel);
+
+        cleanSpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
+        cleanlinessSpinner = new JSpinner(cleanSpinnerNumberModel);
+
+        valForMoneySpinnerNumberModel = new SpinnerNumberModel(1,1,10,1);
+        valForMonSpinner = new JSpinner(valForMoneySpinnerNumberModel);
     }
 
     private void switchToPanel(JPanel jpanel){
