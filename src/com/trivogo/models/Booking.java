@@ -1,5 +1,7 @@
 package com.trivogo.models;
 
+import java.util.Date;
+
 public class Booking {
     private Hotel hotel;
     private User user;
@@ -11,7 +13,6 @@ public class Booking {
     private String status;
     private Review review;
     private int payableAmount;
-
     public Booking(Hotel hotel, User user, HotelRoom room, SearchParameters params, String status) {
         this(hotel, user, room, params.getNumRooms(), params.getCheckInDate(), params.getCheckOutDate(), status);
     }
@@ -103,5 +104,9 @@ public class Booking {
 
     public Review getReview() {
         return review;
+    }
+
+    public boolean isLapsed() {
+        return checkInDate.before(new Date()) && (status.contains("CONFIRMED") || status.contains("WAITLIST"));
     }
 }

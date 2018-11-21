@@ -48,7 +48,7 @@ public class BookingDAO {
             e.printStackTrace();
         }
     }
-    public static void updateBooking(int bookingID, String status) {
+    public static void updateStatus(int bookingID, String status) {
         try {
             PreparedStatement ps = conn.prepareStatement("UPDATE bookings SET status = ? WHERE id = ?");
             ps.setString(1, status);
@@ -72,11 +72,11 @@ public class BookingDAO {
     }
 
     public static void cancelBooking(int bookingID) {
-        updateBooking(bookingID, "CANCELLED");
+        updateStatus(bookingID, "CANCELLED");
     }
 
     public static void confirmWaitlistedBooking(int bookingID) {
-        updateBooking(bookingID, "CONFIRMED WAITLIST");
+        updateStatus(bookingID, "WAITLIST CONFIRMED");
     }
 
     private static Booking fromResultSet(ResultSet rs) {
