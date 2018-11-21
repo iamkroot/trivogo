@@ -191,7 +191,7 @@ public class HomePageGUI {
         inDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if(inDatePicker.getDate().isAfter(outDatePicker.getDate())) {
+                if(inDatePicker.getDate().isAfter(outDatePicker.getDate()) || inDatePicker.getDate().isEqual(outDatePicker.getDate())) {
                     outDatePicker.setDate(inDatePicker.getDate().plusDays(1));
                 }
                 outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), inDatePicker.getDate().plusYears(1));
@@ -676,6 +676,15 @@ public class HomePageGUI {
                 }
             }
         });
+        newInDatePicker.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if(newInDatePicker.getDate().isAfter(newOutDatePicker.getDate()) || newInDatePicker.getDate().isEqual(newOutDatePicker.getDate())) {
+                    newOutDatePicker.setDate(newInDatePicker.getDate().plusDays(1));
+                }
+                newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), newInDatePicker.getDate().plusYears(1));
+            }
+        });
     }
 
     private void cancelBooking() {
@@ -796,6 +805,7 @@ public class HomePageGUI {
         newInDatePicker = new DatePicker(newInDateSettings);
         newInDateSettings.setAllowEmptyDates(false);
         newInDateSettings.setAllowKeyboardEditing(true);
+        newInDateSettings.setDateRangeLimits(inDatePicker.getDate().minusDays(5), inDatePicker.getDate().plusDays(5));
 
         newOutDateSettings = new DatePickerSettings();
         newOutDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
@@ -803,7 +813,9 @@ public class HomePageGUI {
         newOutDatePicker = new DatePicker(newOutDateSettings);
         newOutDateSettings.setAllowEmptyDates(false);
         newOutDateSettings.setAllowKeyboardEditing(true);
-//        outDateSettings.setDateRangeLimits(newInDatePicker.getDate(), today.plusYears(1));
+        newOutDatePicker.setDate(outDatePicker.getDate());
+        //newOutDateSettings.setDateRangeLimits(outDatePicker.getDate(), today.plusYears(1));
+
         peopleSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
         peopleSpinner = new JSpinner(peopleSpinnerNumberModel);
 
