@@ -21,6 +21,7 @@ import java.awt.event.ComponentAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Vector;
 import java.util.List;
@@ -525,13 +526,6 @@ public class HomePageGUI {
                 switchToPanel(previousBookingsPanel);
             }
         });
-        modifyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchToPanel(modifyPanel);
-            }
-        });
-
         addReviewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -587,19 +581,19 @@ public class HomePageGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if(bookingsTable.getSelectedRow() != -1) {
-                    booking = bookings.get(bookingsTable.getSelectedRow());
+                    selectedBooking = bookings.get(bookingsTable.getSelectedRow());
                     rowIndex = bookingsTable.getSelectedRow();
                 }
-                Date oldCheckInDate = booking.getCheckInDate(), oldCheckOutDate = booking.getCheckOutDate();
+                Date oldCheckInDate = selectedBooking.getCheckInDate(), oldCheckOutDate = selectedBooking.getCheckOutDate();
                 // Only allow changing to 5 days before or after current dates
                 LocalDate newInLimit = DateUtil.toLocalDate(oldCheckInDate).minusDays(5), newOutLimit = DateUtil.toLocalDate(oldCheckOutDate).plusDays(5);
                 if (LocalDate.now().isAfter(newInLimit)){
                     newInLimit = LocalDate.now();
                 }
-                newInDateSettings.setDateRangeLimits(newInLimit, newOutLimit.minusDays(1));
-                newInDatePicker.setDate(DateUtil.toLocalDate(booking.getCheckInDate()));
-                newOutDatePicker.setDate(DateUtil.toLocalDate(booking.getCheckOutDate()));
-                newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), newOutLimit);
+                newInDatePicker.setDate(LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()));
+                newInDateSettings.setDateRangeLimits(LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()).minusDays(5),
+                        LocalDate.ofInstant(selectedBooking.getCheckInDate().toInstant(), ZoneId.systemDefault()).plusDays(5));
+                newOutDatePicker.setDate(LocalDate.ofInstant(selectedBooking.getCheckOutDate().toInstant(), ZoneId.systemDefault()));
                 switchToPanel(modifyPanel);
             }
         });
@@ -804,16 +798,12 @@ public class HomePageGUI {
         newInDateSettings.setAllowKeyboardEditing(true);
         newInDatePicker = new DatePicker(newInDateSettings);
         newInDateSettings.setAllowEmptyDates(false);
-        newInDateSettings.setAllowKeyboardEditing(true);
-        newInDateSettings.setDateRangeLimits(inDatePicker.getDate().minusDays(5), inDatePicker.getDate().plusDays(5));
 
         newOutDateSettings = new DatePickerSettings();
         newOutDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
         newOutDateSettings.setAllowKeyboardEditing(true);
         newOutDatePicker = new DatePicker(newOutDateSettings);
         newOutDateSettings.setAllowEmptyDates(false);
-        newOutDateSettings.setAllowKeyboardEditing(true);
-        newOutDatePicker.setDate(outDatePicker.getDate());
         //newOutDateSettings.setDateRangeLimits(outDatePicker.getDate(), today.plusYears(1));
 
         peopleSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
