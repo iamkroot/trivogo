@@ -12,10 +12,6 @@ import com.trivogo.utils.Regex;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Vector;
@@ -231,8 +227,10 @@ public class HomePageGUI {
             switchToPanel(roomsPanel);
             deluxeRoom = hotel.getDexRoom();
             stdRoom = hotel.getStdRoom();
-            roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate()});
-            roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate()});
+            int availableDexRooms = BookingDAO.getNumAvailableRooms(params.getCheckInDate(), params.getCheckOutDate(), hotel, deluxeRoom);
+            int availableStdRooms = BookingDAO.getNumAvailableRooms(params.getCheckInDate(), params.getCheckOutDate(), hotel, stdRoom);
+            roomModel.addRow(new Object[]{stdRoom.getType(),stdRoom.getAmenities(),stdRoom.getRate(), availableStdRooms >= params.getNumRooms() ? "Available": "Unavailable"});
+            roomModel.addRow(new Object[]{deluxeRoom.getType(),deluxeRoom.getAmenities(),deluxeRoom.getRate(), availableDexRooms >= params.getNumRooms() ? "Available": "Unavailable"});
             for(int i=0; i<roomsTable.getRowCount(); i++) {
                 roomsTable.setRowHeight(i, 70);
             }
@@ -316,10 +314,13 @@ public class HomePageGUI {
         });
         hotelTable.getSelectionModel().addListSelectionListener(listSelectionEvent -> {
             if(hotelTable.getSelectedRow() != -1) {
+                reviews = ReviewDAO.getHotelReviews(hotels.get(hotelTable.getSelectedRow()));
+                reviewsButton.setText("View Reviews (" + reviews.size() + ")");
                 reviewsButton.setEnabled(true);
                 roomButton.setEnabled(true);
             }
             else {
+                reviewsButton.setText("View Reviews");
                 reviewsButton.setEnabled(false);
                 roomButton.setEnabled(false);
             }
@@ -484,11 +485,10 @@ public class HomePageGUI {
                 }
             }
 
-            reviews = ReviewDAO.getHotelReviews(hotels.get(hotelTable.getSelectedRow()));
-
             for (Review review : reviews) {
                 reviewModel.addRow(new Object[]{review.getHotel().getName(),review.getUser().getUsername(),review.getReviewDescription(),
-                review.getParamLocation(),review.getParamRoom(),review.getParamService(),review.getParamClean(),review.getParamValueForMoney()});
+                        review.getParamLocation(),review.getParamRoom(),review.getParamService(),review.getParamClean(),review.getParamValueForMoney(),
+                        String.valueOf((double) (Math.round(review.getParamOverall()*100))/100)});
             }
             for(int i=0; i<reviewTable.getRowCount(); i++) {
                 reviewTable.setRowHeight(i, 50);
@@ -633,6 +633,7 @@ public class HomePageGUI {
         roomModel.addColumn("Room Type");
         roomModel.addColumn("Amenities");
         roomModel.addColumn("Rate");
+        roomModel.addColumn("Availability");
 
         roomsTable.setModel(roomModel);
 
@@ -670,7 +671,7 @@ public class HomePageGUI {
         reviewModel.addColumn("Hotel Services");
         reviewModel.addColumn("Hotel Cleanliness");
         reviewModel.addColumn("Value for Money");
-
+        reviewModel.addColumn("Overall");
         reviewTable.setModel(reviewModel);
 
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
