@@ -38,7 +38,7 @@ class DBConn {
     public static void populateDB() {
         conn = getConn();
 //        populateHotels();
-//        populateBookings();
+        populateBookings();
 //        populateReviews();
 //        populateUsers();
     }
@@ -121,74 +121,74 @@ class DBConn {
     private static void populateBookings() {
         Object[][] bookingData = {
 
-                {2, "vg", "standard", 5, "2018-11-01", "2018-11-10", "CONFIRMED"},
-                {3, "1", "deluxe", 2, "2018-11-03", "2018-11-12", "CONFIRMED"},
-                {1, "vg", "deluxe", 3, "2018-11-02", "2018-11-12", "CONFIRMED"},
-                {4, "dv", "standard", 6, "2018-11-05", "2018-11-11", "CONFIRMED"},
-                {6, "asdf", "standard", 3, "2018-11-01", "2018-11-10", "CONFIRMED"},
-                {5, "1", "deluxe", 7, "2018-11-02", "2018-11-10", "CONFIRMED"},
-                {7, "asdf", "deluxe", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
-                {9, "vg", "standard", 1, "2018-11-08", "2018-11-19", "CONFIRMED"},
-                {8, "asdf", "standard", 1, "2018-11-02", "2018-11-15", "CONFIRMED"},
-                {11, "dv", "deluxe", 2, "2018-11-09", "2018-11-12", "CONFIRMED"},
-                {10, "vg", "deluxe", 5, "2018-11-07", "2018-11-12", "CONFIRMED"},
-                {12, "asdf", "standard", 1, "2018-11-08", "2018-11-14", "CONFIRMED"},
-                {13, "1", "standard", 2, "2018-11-05", "2018-11-17", "CONFIRMED"},
-                {2, "asdf", "deluxe", 1, "2018-11-06", "2018-11-15", "CONFIRMED"},
-                {3, "vg", "standard", 4, "2018-11-03", "2018-11-21", "CONFIRMED"},
-                {1, "asdf", "standard", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
-                {4, "dv", "deluxe", 3, "2018-11-03", "2018-11-17", "CONFIRMED"},
-                {6, "vg", "standard", 4, "2018-11-01", "2018-11-17", "CONFIRMED"},
-                {5, "asdf", "deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
-                {7, "asdf", "standard", 3, "2018-11-01", "2018-11-15", "CONFIRMED"},
-                {9, "vg", "standard", 4, "2018-11-05", "2018-11-15", "CONFIRMED"},
-                {8, "asdf", "deluxe", 1, "2018-11-02", "2018-11-17", "CONFIRMED"},
-                {11, "asdf", "standard", 2, "2018-11-07", "2018-11-13", "CONFIRMED"},
-                {10, "vg", "deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
-                {12, "asdf", "deluxe", 1, "2018-11-09", "2018-11-15", "CONFIRMED"},
-                {13, "asdf", "standard", 5, "2018-11-01", "2018-11-12", "CONFIRMED"},
+                {2, "vg", "Standard", 5, "2018-11-01", "2018-11-10", "CONFIRMED"},
+                {3, "1", "Deluxe", 2, "2018-11-03", "2018-11-12", "CONFIRMED"},
+                {1, "vg", "Deluxe", 3, "2018-11-02", "2018-11-12", "CONFIRMED"},
+                {4, "dv", "Standard", 6, "2018-11-05", "2018-11-11", "CONFIRMED"},
+                {6, "asdf", "Standard", 3, "2018-11-01", "2018-11-10", "CONFIRMED"},
+                {5, "1", "Deluxe", 7, "2018-11-02", "2018-11-10", "CONFIRMED"},
+                {7, "asdf", "Deluxe", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
+                {9, "vg", "Standard", 1, "2018-11-08", "2018-11-19", "CONFIRMED"},
+                {8, "asdf", "Standard", 1, "2018-11-02", "2018-11-15", "CONFIRMED"},
+                {11, "dv", "Deluxe", 2, "2018-11-09", "2018-11-12", "CONFIRMED"},
+                {10, "vg", "Deluxe", 5, "2018-11-07", "2018-11-12", "CONFIRMED"},
+                {12, "asdf", "Standard", 1, "2018-11-08", "2018-11-14", "CONFIRMED"},
+                {13, "1", "Standard", 2, "2018-11-05", "2018-11-17", "CONFIRMED"},
+                {2, "asdf", "Deluxe", 1, "2018-11-06", "2018-11-15", "CONFIRMED"},
+                {3, "vg", "Standard", 4, "2018-11-03", "2018-11-21", "CONFIRMED"},
+                {1, "asdf", "Standard", 1, "2018-11-05", "2018-11-12", "CONFIRMED"},
+                {4, "dv", "Deluxe", 3, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {6, "vg", "Standard", 4, "2018-11-01", "2018-11-17", "CONFIRMED"},
+                {5, "asdf", "Deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {7, "asdf", "Standard", 3, "2018-11-01", "2018-11-15", "CONFIRMED"},
+                {9, "vg", "Standard", 4, "2018-11-05", "2018-11-15", "CONFIRMED"},
+                {8, "asdf", "Deluxe", 1, "2018-11-02", "2018-11-17", "CONFIRMED"},
+                {11, "asdf", "Standard", 2, "2018-11-07", "2018-11-13", "CONFIRMED"},
+                {10, "vg", "Deluxe", 1, "2018-11-03", "2018-11-17", "CONFIRMED"},
+                {12, "asdf", "Deluxe", 1, "2018-11-09", "2018-11-15", "CONFIRMED"},
+                {13, "asdf", "Standard", 5, "2018-11-01", "2018-11-12", "CONFIRMED"},
 
 
-                {1, "asdf", "deluxe", 5, "2018-11-19", "2018-11-23", "CONFIRMED"},
-                {4, "dv", "standard", 1,  "2018-12-1", "2018-12-2", "CONFIRMED"},
-                {9, "pp", "standard", 13, "2018-11-23", "2018-11-27", "CONFIRMED"},
-                {7, "dv", "deluxe", 1, "2018-12-23", "2019-01-02", "CONFIRMED"},
-                {5, "asdf", "deluxe", 10, "2018-11-28", "2018-12-03", "CONFIRMED"},
-                {13, "pp", "deluxe", 3, "2018-12-12", "2018-12-15", "CONFIRMED"},
-                {3, "1", "deluxe", 2, "2018-12-20", "2019-01-03", "CONFIRMED"},
-                {10, "asdf", "deluxe", 11, "2018-12-15", "2019-01-05", "CONFIRMED"},
-                {2, "dv", "standard", 56, "2018-12-13", "2018-12-19", "CONFIRMED"},
-                {10, "pp", "standard", 1, "2018-12-23", "2018-12-28", "WAITLIST PENDING"},
-                {2, "asdf", "standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"},
-                {1, "1", "deluxe", 1, "2018-11-16", "2018-11-19", "CANCELLED"},
-                {4, "asdf", "standard",45, "2018-11-25", "2018-12-15", "CONFIRMED"},
-                {7, "1", "deluxe", 3, "2018-12-22", "2019-01-02", "CANCELLED"},
-                {10, "1", "deluxe", 1, "2018-12-20", "2018-12-22", "CONFIRMED"},
-                {6, "1", "deluxe", 5, "2018-11-25", "2018-11-30", "CONFIRMED"},
-                {7, "dv", "deluxe", 2, "2018-12-23", "2019-01-02", "WAITLIST CONFIRMED"},
-                {2, "1", "standard", 42, "2018-12-10", "2018-12-26", "CONFIRMED"},
-                {9, "asdf", "standard", 14, "2018-12-13", "2018-12-16", "CANCELLED"},
-                {8, "1", "standard", 250, "2018-12-15", "2018-12-27", "CONFIRMED"},
-                {7, "1", "standard", 10, "2018-12-23", "2018-12-27", "CONFIRMED"},
-                {6, "1", "deluxe", 45, "2018-12-11", "2018-12-20", "CONFIRMED"},
-                {11, "1", "standard", 78, "2018-12-02", "2018-12-08", "CONFIRMED"},
-                {12, "dv", "deluxe", 12, "2018-12-06", "2018-12-15", "CONFIRMED"}
+                {1, "asdf", "Deluxe", 5, "2018-11-19", "2018-11-23", "CONFIRMED"},
+                {4, "dv", "Standard", 1,  "2018-12-1", "2018-12-2", "CONFIRMED"},
+                {9, "pp", "Standard", 13, "2018-11-23", "2018-11-27", "CONFIRMED"},
+                {7, "dv", "Deluxe", 1, "2018-12-23", "2019-01-02", "CONFIRMED"},
+                {5, "asdf", "Deluxe", 10, "2018-11-28", "2018-12-03", "CONFIRMED"},
+                {13, "pp", "Deluxe", 3, "2018-12-12", "2018-12-15", "CONFIRMED"},
+                {3, "1", "Deluxe", 2, "2018-12-20", "2019-01-03", "CONFIRMED"},
+                {10, "asdf", "Deluxe", 11, "2018-12-15", "2019-01-05", "CONFIRMED"},
+                {2, "dv", "Standard", 56, "2018-12-13", "2018-12-19", "CONFIRMED"},
+                {10, "pp", "Standard", 1, "2018-12-23", "2018-12-28", "WAITLIST PENDING"},
+                {2, "asdf", "Standard", 1, "2018-12-01", "2018-12-02", "CONFIRMED"},
+                {1, "1", "Deluxe", 1, "2018-11-16", "2018-11-19", "CANCELLED"},
+                {4, "asdf", "Standard",45, "2018-11-25", "2018-12-15", "CONFIRMED"},
+                {7, "1", "Deluxe", 3, "2018-12-22", "2019-01-02", "CANCELLED"},
+                {10, "1", "Deluxe", 1, "2018-12-20", "2018-12-22", "CONFIRMED"},
+                {6, "1", "Deluxe", 5, "2018-11-25", "2018-11-30", "CONFIRMED"},
+                {7, "dv", "Deluxe", 2, "2018-12-23", "2019-01-02", "WAITLIST CONFIRMED"},
+                {2, "1", "Standard", 42, "2018-12-10", "2018-12-26", "CONFIRMED"},
+                {9, "asdf", "Standard", 14, "2018-12-13", "2018-12-16", "CANCELLED"},
+                {8, "1", "Standard", 250, "2018-12-15", "2018-12-27", "CONFIRMED"},
+                {7, "1", "Standard", 10, "2018-12-23", "2018-12-27", "CONFIRMED"},
+                {6, "1", "Deluxe", 45, "2018-12-11", "2018-12-20", "CONFIRMED"},
+                {11, "1", "Standard", 78, "2018-12-02", "2018-12-08", "CONFIRMED"},
+                {12, "dv", "Deluxe", 12, "2018-12-06", "2018-12-15", "CONFIRMED"}
 
                 /*These intros should cause waitlist
-                {2, "dv", "standard", 10, "2018-12-15", "2018-12-17", "<waitlist>"},
-                {4, "pp", "deluxe", 7, "2018-12-01", "2018-11-04", "<waitlist>"},
-                {7, "asdf", "deluxe", 3, "2018-12-24", "2018-12-26", "<waitlist>"},
-                {7, "asdf", "standard", 1, "2018-12-24", "2018-12-26", "<waitlist>"},
-                {10, "dv", "deluxe", 2, "2018-12-18", "2018-12-23", "<waitlist>"},
-                {6, "1", "deluxe", 10, "2018-12-15", "2018-12-20", "<waitlist>"},
-                {INTHOTELID, "asdf", "standard", INTNUMROOMS, "INDATE", "OUTDATE", "<waitlit>"}*/
+                {2, "dv", "Standard", 10, "2018-12-15", "2018-12-17", "<waitlist>"},
+                {4, "pp", "Deluxe", 7, "2018-12-01", "2018-11-04", "<waitlist>"},
+                {7, "asdf", "Deluxe", 3, "2018-12-24", "2018-12-26", "<waitlist>"},
+                {7, "asdf", "Standard", 1, "2018-12-24", "2018-12-26", "<waitlist>"},
+                {10, "dv", "Deluxe", 2, "2018-12-18", "2018-12-23", "<waitlist>"},
+                {6, "1", "Deluxe", 10, "2018-12-15", "2018-12-20", "<waitlist>"},
+                {INTHOTELID, "asdf", "Standard", INTNUMROOMS, "INDATE", "OUTDATE", "<waitlit>"}*/
 
         };
         for (int i = 0; i < bookingData.length; i++) {
             Object[] data = bookingData[i];
             Hotel hotel = HotelDAO.getHotelByID((Integer) data[0]);
             HotelRoom hr;
-            if(data[2].equals("deluxe"))
+            if(data[2].equals("Deluxe"))
                 hr = hotel.getDexRoom();
             else
                 hr = hotel.getStdRoom();

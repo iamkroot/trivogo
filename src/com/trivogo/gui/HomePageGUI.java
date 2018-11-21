@@ -412,7 +412,7 @@ public class HomePageGUI {
         confirmBookingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("standard") : hotel.getRoomInfo("deluxe"), params, "PENDING" );
+                booking = new Booking(hotel, user, roomsTable.getSelectedRow() == 0 ? hotel.getRoomInfo("Standard") : hotel.getRoomInfo("Deluxe"), params, "PENDING" );
                 if (params.getNumRooms() <= BookingDAO.getNumAvailableRooms(booking)) {
                     switchToPanel(verificationPanel);
                     panLabel.setVisible(false);

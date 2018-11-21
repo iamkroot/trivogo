@@ -8,21 +8,21 @@ public class Hotel {
     private String name, location;
     private HashMap<HotelRoom, Integer> totalRooms = new HashMap<>();
     private HotelRoom stdRoom, dexRoom;
-    private float rating;
+    private int rating;
 
     public Hotel(int id, String name, String location, int numDexRooms, int numStdRooms,
                  String dexRoomAmenities, float dexRoomRate,
                  String stdRoomAmenities, float stdRoomRate,
-                 float rating) {
+                 int rating) {
         this.id = id;
         this.name = name;
         this.location = location;
         if (numStdRooms > 0) {
-            stdRoom = new HotelRoom("standard", stdRoomAmenities, (int) stdRoomRate);
+            stdRoom = new HotelRoom("Standard", stdRoomAmenities, (int) stdRoomRate);
             totalRooms.put(stdRoom, numStdRooms);
         }
         if (numDexRooms > 0) {
-            dexRoom = new HotelRoom("deluxe", dexRoomAmenities, (int) dexRoomRate);
+            dexRoom = new HotelRoom("Deluxe", dexRoomAmenities, (int) dexRoomRate);
             totalRooms.put(dexRoom, numDexRooms);
         }
         setRating(rating);
@@ -58,17 +58,17 @@ public class Hotel {
     }
 
     public HotelRoom getRoomInfo(String type) {
-        if(type.equals("deluxe"))
+        if(type.equals("Deluxe"))
             return dexRoom;
         else
             return stdRoom;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 }
