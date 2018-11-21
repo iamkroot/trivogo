@@ -12,7 +12,9 @@ import com.trivogo.utils.Regex;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -125,6 +127,7 @@ public class HomePageGUI {
     private JButton submitReviewButton;
     private JTable reviewTable;
     private JButton backHotelsButton;
+    private JCheckBox waitlistCheckBox;
     //private JOptionPane verificationStatus;
     DatePickerSettings inDateSettings, newInDateSettings;
     DatePickerSettings outDateSettings, newOutDateSettings;
@@ -611,6 +614,13 @@ public class HomePageGUI {
                     BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
                     booking = tempBooking;
                     //TODO: Set labels for all fields in summaryPanel
+                    nameHotelLabel.setText(booking.getHotel().getName());
+                    typeRoomLabel.setText(booking.getRoom().getType());
+                    numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
+                    dateInLabel.setText(booking.getCheckInDate().toString());
+                    dateOutLabel.setText(booking.getCheckOutDate().toString());
+                    idBookingLabel.setText(String.valueOf(booking.getBookingID()));
+                    statusBookingLabel.setText(booking.getStatus());
                     switchToPanel(summaryPanel);
                 }
                 else{
@@ -622,7 +632,44 @@ public class HomePageGUI {
                         BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
                         BookingDAO.updateBooking(booking.getBookingID(), booking.getStatus());
                         //TODO: Set labels for all fields in summaryPanel
+                        nameHotelLabel.setText(booking.getHotel().getName());
+                        typeRoomLabel.setText(booking.getRoom().getType());
+                        numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
+                        dateInLabel.setText(booking.getCheckInDate().toString());
+                        dateOutLabel.setText(booking.getCheckOutDate().toString());
+                        idBookingLabel.setText(String.valueOf(booking.getBookingID()));
+                        statusBookingLabel.setText(booking.getStatus());
                         switchToPanel(summaryPanel);
+                    }
+                }
+            }
+
+        });
+        waitlistCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TableRowSorter<DefaultTableModel>tr = new TableRowSorter<DefaultTableModel>(bookingModel);
+                bookingsTable.setRowSorter(tr);
+                if(waitlistCheckBox.isSelected()) {
+                    tr.setRowFilter(RowFilter.regexFilter("WAITLIST",6));
+                    for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                        bookingsTable.setRowHeight(i, 30);
+                    }
+                }
+                else {
+                    if (bookingsTable.getRowCount() > 0) {
+                        for (int i = bookingsTable.getRowCount() - 1; i > -1; i--) {
+                            bookingModel.removeRow(i);
+                        }
+                    }
+                    bookings = BookingDAO.getUserBookings(user);
+                    for (Booking booking : bookings) {
+                        bookingModel.addRow(new Object[]{String.valueOf(booking.getBookingID()),booking.getHotel().getName(),
+                                booking.getCheckInDate().toString(),booking.getCheckOutDate().toString(),booking.getRoom().getType(),
+                                String.valueOf(booking.getNumOfRooms()),booking.getStatus()});
+                    }
+                    for(int i=0; i<bookingsTable.getRowCount(); i++) {
+                        bookingsTable.setRowHeight(i, 30);
                     }
                 }
             }
@@ -652,7 +699,7 @@ public class HomePageGUI {
 
             public boolean isCellEditable(int row, int column) {
                 return false;
-            };
+            }
         };
         hotelTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         hotelModel = new DefaultTableModel();
@@ -682,9 +729,8 @@ public class HomePageGUI {
 
             public boolean isCellEditable(int row, int column) {
                 return false;
-            };
+            }
         };
-
         bookingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         bookingModel = new DefaultTableModel();
         bookingModel.addColumn("Booking Id");
@@ -696,7 +742,9 @@ public class HomePageGUI {
         bookingModel.addColumn("Status");
 
 
+
         bookingsTable.setModel(bookingModel);
+
 
         reviewTable = new JTable() {
             private static final long serialVersionUID = 1L;
