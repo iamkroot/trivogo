@@ -123,6 +123,9 @@ public class HomePageGUI {
     private JTable reviewTable;
     private JButton backHotelsButton;
     private JCheckBox waitlistCheckBox;
+    private JComboBox expMonthDropdown;
+    private JTextField expYearField;
+    private JComboBox expYearDropdown;
 
     private User user;
     DatePickerSettings inDateSettings, newInDateSettings;
@@ -151,6 +154,7 @@ public class HomePageGUI {
     SearchParameters params;
     int payableAmount;
     int rowIndex;
+
 
     public HomePageGUI(User loggedInUser) {
         user = loggedInUser;
@@ -263,7 +267,7 @@ public class HomePageGUI {
         verifyButton.addActionListener(e -> {
             if(adhaarButton.isSelected()) {
                 verificationNumber = adhaarField.getText();
-                if(verificationNumber.length() == 12) {
+                if(Regex.validate_adhaar(verificationNumber)) {
                     if(booking.getStatus().equals("PENDING")) {
                         booking.setStatus("CONFIRMED");
                     }
@@ -275,10 +279,11 @@ public class HomePageGUI {
                 else {
                     JOptionPane.showMessageDialog(null,"Invalid Adhaar Card Number");
                 }
+                adhaarButton.setSelected(false);
             }
             else if(panButton.isSelected()) {
                 verificationNumber = panField.getText();
-                if(verificationNumber.length() == 10) {
+                if(Regex.validate_pan(verificationNumber)) {
                     if(booking.getStatus().equals("PENDING"))
                         booking.setStatus("CONFIRMED");
                     booking.setBookingID(BookingDAO.addBooking(booking));
@@ -289,6 +294,7 @@ public class HomePageGUI {
                 else {
                     JOptionPane.showMessageDialog(null,"Invalid Pan Card Number");
                 }
+                panButton.setSelected(false);
             }
             nameHotelLabel.setText(booking.getHotel().getName());
             typeRoomLabel.setText(booking.getRoom().getType());
@@ -301,6 +307,8 @@ public class HomePageGUI {
             panField.setText("");
             adhaarButton.setSelected(false);
             adhaarField.setText("");
+            adhaarField.setVisible(false);
+            panField.setVisible(false);
 
         });
         backRoomButton.addActionListener(e -> {
@@ -422,7 +430,8 @@ public class HomePageGUI {
                 cardNumLabel.setVisible(true);
                 cardNumField.setVisible(true);
                 dateExpLabel.setVisible(true);
-                dateExpField.setVisible(true);
+                expMonthDropdown.setVisible(true);
+                expYearField.setVisible(true);
                 cvvField.setVisible(true);
                 cvvLabel.setVisible(true);
                 confirmCancelButton.setText("Confirm and Pay");
@@ -431,7 +440,8 @@ public class HomePageGUI {
                 cardNumLabel.setVisible(false);
                 cardNumField.setVisible(false);
                 dateExpLabel.setVisible(false);
-                dateExpField.setVisible(false);
+                expMonthDropdown.setVisible(false);
+                expYearField.setVisible(false);
                 cvvField.setVisible(false);
                 cvvLabel.setVisible(false);
                 confirmCancelButton.setText("Confirm");
@@ -441,7 +451,16 @@ public class HomePageGUI {
         });
         confirmCancelButton.addActionListener(e -> {
             if(booking.getPayableAmount() != 0) {
-                if((cvvField.toString().length() == 3) && Regex.validate_date(dateExpField.toString()) && (cardNumField.toString().length() == 10)) {
+                if(!Regex.validate_card(cardNumField.toString())){
+                    JOptionPane.showMessageDialog(null, "Please enter valid Credit Card Number");
+                    }
+                else if(!Regex.validate_expdate(expMonthDropdown.getSelectedItem()+"/"+expYearField.toString())){
+                    JOptionPane.showMessageDialog(null, "Please enter valid Expiry Date");
+                }
+                else if(!(cvvField.toString().length() == 3)){
+                    JOptionPane.showMessageDialog(null, "Please enter valid CVV");
+                }
+                else{
                     JOptionPane.showMessageDialog(null, "Payment Successful. Booking cancelled.");
                     booking = bookings.get(rowIndex);
                     cancelBooking();
@@ -675,6 +694,10 @@ public class HomePageGUI {
 
         Vector<String> allLocation = new Vector<>(com.trivogo.dao.HotelDAO.getAllLocations());
         locationBox = new JComboBox(allLocation);
+
+        String[] allMonthNum = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+        expMonthDropdown = new JComboBox(allMonthNum);
+        expMonthDropdown.setSelectedIndex(0);
 
         final LocalDate today = LocalDate.now();
         inDateSettings = DateUtil.createDefaultSettings();
