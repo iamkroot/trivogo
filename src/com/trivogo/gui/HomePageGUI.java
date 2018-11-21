@@ -600,23 +600,23 @@ public class HomePageGUI {
         confirmModButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Booking tempBooking = new Booking(booking);
+                Booking tempBooking = new Booking(selectedBooking);
                 Date newCheckInDate = DateUtil.toDate(newInDatePicker.getDate()), newCheckOutDate = DateUtil.toDate(newOutDatePicker.getDate());
                 tempBooking.setCheckInDate(newCheckInDate);
                 tempBooking.setCheckOutDate(newCheckOutDate);
-                BookingDAO.updateStatus(booking.getBookingID(), "PENDING MODIFY");
+                BookingDAO.updateStatus(selectedBooking.getBookingID(), "PENDING MODIFY");
                 if(tempBooking.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(tempBooking)){
                     tempBooking.setStatus("CONFIRMED");
-                    BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
-                    booking = tempBooking;
+                    BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
+                    selectedBooking = tempBooking;
                     //TODO: Set labels for all fields in summaryPanel
-                    nameHotelLabel.setText(booking.getHotel().getName());
-                    typeRoomLabel.setText(booking.getRoom().getType());
-                    numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
-                    dateInLabel.setText(booking.getCheckInDate().toString());
-                    dateOutLabel.setText(booking.getCheckOutDate().toString());
-                    idBookingLabel.setText(String.valueOf(booking.getBookingID()));
-                    statusBookingLabel.setText(booking.getStatus());
+                    nameHotelLabel.setText(selectedBooking.getHotel().getName());
+                    typeRoomLabel.setText(selectedBooking.getRoom().getType());
+                    numRoomsLabel.setText(String.valueOf(selectedBooking.getNumOfRooms()));
+                    dateInLabel.setText(selectedBooking.getCheckInDate().toString());
+                    dateOutLabel.setText(selectedBooking.getCheckOutDate().toString());
+                    idBookingLabel.setText(String.valueOf(selectedBooking.getBookingID()));
+                    statusBookingLabel.setText(selectedBooking.getStatus());
                     switchToPanel(summaryPanel);
                 }
                 else{
@@ -624,20 +624,20 @@ public class HomePageGUI {
                             " Would you like to enroll in the waiting list for this room", "No Rooms Available", JOptionPane.YES_NO_OPTION);
                     if(a == JOptionPane.YES_OPTION){
                         tempBooking.setStatus("WAITLIST PENDING");
-                        booking = tempBooking;
-                        BookingDAO.updateBooking(booking.getBookingID(), newCheckInDate, newCheckOutDate);
+                        selectedBooking = tempBooking;
+                        BookingDAO.updateBooking(selectedBooking.getBookingID(), newCheckInDate, newCheckOutDate);
                         //TODO: Set labels for all fields in summaryPanel
-                        nameHotelLabel.setText(booking.getHotel().getName());
-                        typeRoomLabel.setText(booking.getRoom().getType());
-                        numRoomsLabel.setText(String.valueOf(booking.getNumOfRooms()));
-                        dateInLabel.setText(booking.getCheckInDate().toString());
-                        dateOutLabel.setText(booking.getCheckOutDate().toString());
-                        idBookingLabel.setText(String.valueOf(booking.getBookingID()));
-                        statusBookingLabel.setText(booking.getStatus());
+                        nameHotelLabel.setText(selectedBooking.getHotel().getName());
+                        typeRoomLabel.setText(selectedBooking.getRoom().getType());
+                        numRoomsLabel.setText(String.valueOf(selectedBooking.getNumOfRooms()));
+                        dateInLabel.setText(selectedBooking.getCheckInDate().toString());
+                        dateOutLabel.setText(selectedBooking.getCheckOutDate().toString());
+                        idBookingLabel.setText(String.valueOf(selectedBooking.getBookingID()));
+                        statusBookingLabel.setText(selectedBooking.getStatus());
                         switchToPanel(summaryPanel);
                     }
                 }
-                BookingDAO.updateStatus(booking.getBookingID(), booking.getStatus());
+                BookingDAO.updateStatus(selectedBooking.getBookingID(), selectedBooking.getStatus());
             }
 
         });
