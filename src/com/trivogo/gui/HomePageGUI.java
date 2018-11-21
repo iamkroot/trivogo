@@ -6,6 +6,7 @@ import com.trivogo.dao.BookingDAO;
 import com.trivogo.dao.HotelDAO;
 import com.trivogo.dao.ReviewDAO;
 import com.trivogo.models.*;
+import com.trivogo.utils.DateUtil;
 import com.trivogo.utils.Regex;
 
 import javax.swing.*;
@@ -99,9 +100,9 @@ public class HomePageGUI {
     private JButton confirmCancelButton;
     private JButton backPrevButton;
     private JLabel newInDateLabel;
-    private JTextField textField1;
+    private DatePicker newInDatePicker;
     private JLabel newOutDateLabel;
-    private JTextField textField2;
+    private DatePicker newOutDatePicker;
     private JButton confirmModButton;
     private JButton backModifyButton;
     private JLabel selectedHotelLabel;
@@ -125,8 +126,8 @@ public class HomePageGUI {
     private JTable reviewTable;
     private JButton backHotelsButton;
     //private JOptionPane verificationStatus;
-    DatePickerSettings inDateSettings;
-    DatePickerSettings outDateSettings;
+    DatePickerSettings inDateSettings, newInDateSettings;
+    DatePickerSettings outDateSettings, newOutDateSettings;
     SpinnerNumberModel peopleSpinnerNumberModel;
     SpinnerNumberModel roomSpinnerNumberModel;
     SpinnerNumberModel locationSpinnerNumberModel;
@@ -586,6 +587,16 @@ public class HomePageGUI {
                     booking = bookings.get(bookingsTable.getSelectedRow());
                     rowIndex = bookingsTable.getSelectedRow();
                 }
+                Date oldCheckInDate = booking.getCheckInDate(), oldCheckOutDate = booking.getCheckOutDate();
+                // Only allow changing to 5 days before or after current dates
+                LocalDate newInLimit = DateUtil.toLocalDate(oldCheckInDate).minusDays(5), newOutLimit = DateUtil.toLocalDate(oldCheckOutDate).plusDays(5);
+                if (LocalDate.now().isAfter(newInLimit)){
+                    newInLimit = LocalDate.now();
+                }
+                newInDateSettings.setDateRangeLimits(newInLimit, newOutLimit.minusDays(1));
+                newInDatePicker.setDate(DateUtil.toLocalDate(booking.getCheckInDate()));
+                newOutDatePicker.setDate(DateUtil.toLocalDate(booking.getCheckOutDate()));
+                newOutDateSettings.setDateRangeLimits(newInDatePicker.getDate().plusDays(1), newOutLimit);
                 switchToPanel(modifyPanel);
             }
         });
@@ -593,8 +604,7 @@ public class HomePageGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Booking tempBooking = new Booking(booking);
-                // TODO: get from datepicker
-                Date newCheckInDate = new Date(), newCheckOutDate = new Date();
+                Date newCheckInDate = DateUtil.toDate(newInDatePicker.getDate()), newCheckOutDate = DateUtil.toDate(newOutDatePicker.getDate());
                 tempBooking.setCheckInDate(newCheckInDate);
                 tempBooking.setCheckOutDate(newCheckOutDate);
                 if(tempBooking.getNumOfRooms() <= BookingDAO.getNumAvailableRooms(tempBooking)){
@@ -728,9 +738,23 @@ public class HomePageGUI {
         outDatePicker = new DatePicker(outDateSettings);
         outDateSettings.setAllowEmptyDates(false);
         outDateSettings.setAllowKeyboardEditing(true);
-        outDateSettings.setDateRangeLimits(inDatePicker.getDate(), today.plusYears(1));
+        outDateSettings.setDateRangeLimits(inDatePicker.getDate().plusDays(1), today.plusYears(1));
         outDatePicker.setDate(inDatePicker.getDate().plusDays(1));
 
+        newInDateSettings = new DatePickerSettings();
+        newInDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
+        newInDateSettings.setAllowKeyboardEditing(true);
+        newInDatePicker = new DatePicker(newInDateSettings);
+        newInDateSettings.setAllowEmptyDates(false);
+        newInDateSettings.setAllowKeyboardEditing(true);
+
+        newOutDateSettings = new DatePickerSettings();
+        newOutDateSettings.setFormatForDatesCommonEra("d MMM yyyy");
+        newOutDateSettings.setAllowKeyboardEditing(true);
+        newOutDatePicker = new DatePicker(newOutDateSettings);
+        newOutDateSettings.setAllowEmptyDates(false);
+        newOutDateSettings.setAllowKeyboardEditing(true);
+//        outDateSettings.setDateRangeLimits(newInDatePicker.getDate(), today.plusYears(1));
         peopleSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1);
         peopleSpinner = new JSpinner(peopleSpinnerNumberModel);
 
