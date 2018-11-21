@@ -209,7 +209,7 @@ public class HomePageGUI {
                 hotels = HotelDAO.getHotelsByLocation(location);
 
                 for (Hotel hotel : hotels) {
-                    hotelModel.addRow(new Object[]{hotel.getName(), "4 star"});
+                    hotelModel.addRow(new Object[]{hotel.getName(),hotel.getRating()});
                 }
                 for(int i=0; i<hotelTable.getRowCount(); i++) {
                     hotelTable.setRowHeight(i, 50);
