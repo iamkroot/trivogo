@@ -5,6 +5,6 @@
 # Java source files
 *.class
 out/**
-
+*.db
 # OS Specific files
 **/*.DS_Store
